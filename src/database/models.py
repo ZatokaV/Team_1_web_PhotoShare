@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, Date, Text, ForeignKey, func, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, func, Table
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql.sqltypes import DateTime, Boolean
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import DateTime
 
 Base = declarative_base()
 
@@ -38,7 +38,7 @@ class Post(Base):
     updated_at = Column('updated_at', DateTime, default=func.now())
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
 
-    tags = relationship("Tag", secondary=post_tag, backref="posts",  passive_deletes=True)
+    tags = relationship("Tag", secondary=post_tag, backref="posts", passive_deletes=True)
     user = relationship('User', backref="photos")
 
 
