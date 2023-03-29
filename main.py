@@ -6,10 +6,6 @@ app = FastAPI()
 
 @app.get("/", name='Home')
 def read_root():
-    """
-    The read_root function returns a dictionary with the key &quot;message&quot; and value &quot;Hello&quot;.
-    :return: A dictionary
-    """
     return {"message": "Hello"}
 
 
