@@ -14,11 +14,11 @@ sqlalchemy = "^2.0.7"
 alembic = "^1.9.3"
 psycopg2 = "^2.9.5"
 pydantic = {extras = ["email"], version = "^1.10.4"}
-faker = "^17.0.0"
+faker = "^18.3.1"
 libgravatar = "^1.0.3"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
-python-multipart = "^0.0.5"
+python-multipart = "^0.0.6"
 fastapi-limiter = "^0.1.5"
 python-dotenv = "^1.0.0"
 httpx = "^0.23.3"
