@@ -1,9 +1,16 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, func, Table
+from enum import Enum
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, func, Table, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import DateTime
 
 Base = declarative_base()
+
+
+class UserRole(Enum):
+    Admin = 1
+    Moderator = 2
+    User = 3
 
 
 class User(Base):
@@ -18,13 +25,17 @@ class User(Base):
     refresh_token = Column(String(255), nullable=True)
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column('updated_at', DateTime, default=func.now())
+    is_active = Column(Boolean, default=True)
+    user_role = Column(Enum(UserRole), default=UserRole.User)
 
 
 post_tag = Table('post_tag',
                  Base.metadata,
                  Column("id", Integer, primary_key=True),
-                 Column("post", Integer, ForeignKey("posts.id", ondelete="CASCADE")),
-                 Column("tag", Integer, ForeignKey("tags.id", ondelete="CASCADE")),
+                 Column("post", Integer, ForeignKey(
+                     "posts.id", ondelete="CASCADE")),
+                 Column("tag", Integer, ForeignKey(
+                     "tags.id", ondelete="CASCADE")),
                  )
 
 
@@ -38,7 +49,8 @@ class Post(Base):
     updated_at = Column('updated_at', DateTime, default=func.now())
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
 
-    tags = relationship("Tag", secondary=post_tag, backref="posts", passive_deletes=True)
+    tags = relationship("Tag", secondary=post_tag,
+                        backref="posts", passive_deletes=True)
     user = relationship('User', backref="photos")
 
 

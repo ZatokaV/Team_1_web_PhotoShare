@@ -15,10 +15,11 @@ class UserCreate(UserBase):
     password: str = Field(min_length=6)
 
 
-class User(UserBase):
+class UserModel(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    number_of_photos: int
 
     class Config:
         orm_mode = True
@@ -32,7 +33,7 @@ class TagCreate(TagBase):
     pass
 
 
-class Tag(TagBase):
+class TagModel(TagBase):
     id: int
     created_at: datetime
     updated_at: datetime
@@ -52,12 +53,12 @@ class PostCreate(PostBase):
     pass
 
 
-class Post(PostBase):
+class PostModel(PostBase):
     id: int
     created_at: datetime
     updated_at: datetime
     user_id: int
-    comments: Optional[List["Comment"]] = []
+    comments: Optional[List["CommentModel"]] = []
 
     class Config:
         orm_mode = True
@@ -72,7 +73,7 @@ class CommentCreate(CommentBase):
     pass
 
 
-class Comment(CommentBase):
+class CommentModel(CommentBase):
     id: int
     created_at: datetime
     updated_at: datetime
