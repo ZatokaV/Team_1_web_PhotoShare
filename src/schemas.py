@@ -23,7 +23,7 @@ class UserCreate(UserBase):
     password: str = Field(min_length=6)
 
 
-class User(UserBase):
+class UserModel(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
