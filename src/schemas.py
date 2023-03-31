@@ -1,7 +1,15 @@
 from datetime import datetime
+from enum import Enum
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel
+from pydantic import EmailStr, Field
+
+
+class UserRole(str, Enum):
+    Admin = 'admin'
+    Moderator = 'moderator'
+    User = 'user'
 
 
 class UserBase(BaseModel):
@@ -15,11 +23,13 @@ class UserCreate(UserBase):
     password: str = Field(min_length=6)
 
 
-class UserModel(UserBase):
+class User(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
     number_of_photos: int
+    is_active: bool
+    user_role: UserRole
 
     class Config:
         orm_mode = True
@@ -82,3 +92,9 @@ class CommentModel(CommentBase):
 
     class Config:
         orm_mode = True
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
