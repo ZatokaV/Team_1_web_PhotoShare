@@ -13,13 +13,11 @@ app = FastAPI()
 def healthchecker(db: Session = Depends(get_db)):
     try:
         result = db.execute(text("SELECT 1")).fetchone()
-        print(result)
         if result is None:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail=DB_CONFIG_ERROR)
         return {"message": WELCOME_MESSAGE}
     except Exception as e:
-        print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail=DB_CONNECT_ERROR)
 
