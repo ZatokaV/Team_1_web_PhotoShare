@@ -25,8 +25,8 @@ class User(Base):
     refresh_token = Column(String(255), nullable=True)
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column('updated_at', DateTime, default=func.now())
-    # is_active = Column(Boolean, default=True)
-    # user_role = Column(Enum(UserRole), default=UserRole.User)
+    is_active = Column(Boolean, default=True)
+    user_role = Column(Enum(UserRole), default=UserRole.User)
 
 
 post_tag = Table('post_tag',
