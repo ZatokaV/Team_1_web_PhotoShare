@@ -21,6 +21,13 @@ from src.services.auth import auth_service
 router = APIRouter(prefix='/image/transform', tags=['Transform Image'])
 
 
+@router.get('/user', response_model=List[TransformImageResponse], status_code=status.HTTP_200_OK)
+async def get_list_of_transformed_for_user(current_user: User = Depends(auth_service.get_current_user),
+                                           db: Session = Depends(get_db)):
+    return await rep_transform.get_all_transform_images_for_user(current_user, db)
+
+
+
 @router.post('/{base_image_id}', response_model=URLTransformImageResponse, status_code=status.HTTP_200_OK)
 async def transformation_for_image(base_image_id: int, body: TransformImageModel,
                                    current_user: User = Depends(
@@ -90,6 +97,9 @@ async def remove_transformed_image(transform_image_id: int, current_user: User =
 
 
 @router.get('/all/{base_image_id}', response_model=List[TransformImageResponse], status_code=status.HTTP_200_OK)
-async def get_list_of_transformed_image(base_image_id: int, current_user: User = Depends(auth_service.get_current_user),
-                                        db: Session = Depends(get_db)):
+async def get_list_of_transformed_for_image(base_image_id: int,
+                                            current_user: User = Depends(auth_service.get_current_user),
+                                            db: Session = Depends(get_db)):
     return await rep_transform.get_all_transform_images(base_image_id, current_user, db)
+
+
