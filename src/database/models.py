@@ -80,3 +80,14 @@ class Tag(Base):
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
 
     user = relationship('User', backref="tags")
+
+
+class TransformPosts(Base):
+    __tablename__ = 'transform_posts'
+
+    id = Column(Integer, primary_key=True)
+    photo_url = Column(String, nullable=False)
+    photo_id = Column(Integer, ForeignKey(Post.id, ondelete="CASCADE"))
+    created_at = Column('created_at', DateTime, default=func.now())
+
+    post = relationship('Post', backref="transform_posts")
