@@ -20,6 +20,8 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
+    username: str = Field(min_length=2, max_length=25)
+    email: EmailStr
     password: str = Field(min_length=6)
 
 
@@ -52,6 +54,12 @@ class TagModel(TagBase):
     class Config:
         orm_mode = True
 
+
+class TokenModel(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    
 
 class PostBase(BaseModel):
     photo_url: Optional[str]
@@ -92,8 +100,3 @@ class CommentModel(CommentBase):
 
     class Config:
         orm_mode = True
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
