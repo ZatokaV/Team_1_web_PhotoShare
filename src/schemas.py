@@ -6,12 +6,6 @@ from pydantic import BaseModel
 from pydantic import EmailStr, Field
 
 
-class UserRole(str, Enum):
-    Admin = 'admin'
-    Moderator = 'moderator'
-    User = 'user'
-
-
 class UserBase(BaseModel):
     username: str = Field(min_length=2, max_length=15)
     first_name: str = Field(min_length=2, max_length=15)
@@ -29,9 +23,18 @@ class UserModel(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
+    is_active: bool
+    user_role: Enum
+
+    class Config:
+        orm_mode = True
+
+
+class UserProfileModel(UserBase):
+    id: int
+    created_at: datetime
     number_of_photos: int
     is_active: bool
-    user_role: UserRole
 
     class Config:
         orm_mode = True
@@ -59,7 +62,7 @@ class TokenModel(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
-    
+
 
 class PostBase(BaseModel):
     photo_url: Optional[str]

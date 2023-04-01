@@ -10,7 +10,7 @@ from src.routes.transform_posts import router as transform_image
 
 app = FastAPI()
 
-app.include_router(transform_image, prefix='/api')
+
 @app.get("/api/healthchecker")
 def healthchecker(db: Session = Depends(get_db)):
     try:
@@ -32,7 +32,7 @@ def read_root():
 app.include_router(auth.router, prefix='/api')
 app.include_router(posts.router, prefix='/api')
 app.include_router(users.router, prefix='/api')
-
+app.include_router(transform_image, prefix='/api')
 
 if __name__ == '__main__':
     uvicorn.run(app="main:app", reload=True)

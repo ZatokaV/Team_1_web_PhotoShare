@@ -1,12 +1,20 @@
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
-from src.database.models import User
-from src.schemas import UserModel
+from src.database.models import User, Post
+from src.schemas import UserModel, UserProfileModel
 
 
-async def get_user_profile(username: str, db: Session) -> UserModel:
-    pass
+async def get_user_profile(username: str, db: Session) -> UserProfileModel:
+    this_user = db.query(User).filter(User.username == username).first()
+    photo_count = db.query(Post).filter(Post.user == this_user).count()
+    user_profile = None
+    if this_user:
+        user_profile = UserProfileModel(
+            id=this_user.id, username=this_user.username, first_name=this_user.first_name, last_name=this_user.last_name,
+            email=this_user.email, created_at=this_user.created_at, is_active=this_user.is_active, number_of_photos=this_user.number_of_photos if photo_count else 0
+        )
+    return user_profile
 
 
 async def get_user_by_email(email: str, db: Session) -> User:
