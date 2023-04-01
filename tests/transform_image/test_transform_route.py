@@ -80,3 +80,7 @@ def test_get_list_of_transformed_image(post_id, client, token):
     data = response.json()
     assert type(data) == list
 
+
+def test_remove_transformed_image(post_id, client, token):
+    response = client.delete(f'/api/image/transform/{post_id}',  headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 204, response.text

@@ -28,5 +28,13 @@ async def get_transform_image(image_id: int, current_user: User, db: Session) ->
     return db.query(TransformPosts).filter(TransformPosts.id == image_id).first()
 
 
+async def remove_transform_image(image_id: int, current_user: User, db: Session) -> TransformPosts | None:
+    img = db.query(TransformPosts).filter(TransformPosts.id == image_id).first()
+    if img:
+        db.delete(img)
+        db.commit()
+    return img
+
+
 async def get_all_transform_images(image_id: int, current_user: User, db: Session) -> List[TransformPosts]:
     return db.query(TransformPosts).filter(TransformPosts.photo_id == image_id).all()
