@@ -1,5 +1,5 @@
-from enum import Enum
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, func, Table, Boolean
+import enum
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, func, Table, Boolean, Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import DateTime
@@ -7,7 +7,7 @@ from sqlalchemy.sql.sqltypes import DateTime
 Base = declarative_base()
 
 
-class UserRole(Enum):
+class UserRole(enum.Enum):
     Admin = 1
     Moderator = 2
     User = 3

@@ -20,6 +20,8 @@ class UserModel(UserBase):
     created_at: datetime
     updated_at: datetime
     number_of_photos: int
+    is_active: bool
+    user_role: UserRole
 
     class Config:
         orm_mode = True
@@ -53,6 +55,17 @@ class PostCreate(PostBase):
     pass
 
 
+class PostModel(PostBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    user_id: int
+    comments: Optional[List["CommentModel"]] = []
+
+    class Config:
+        orm_mode = True
+
+
 class CommentBase(BaseModel):
     comment_url: Optional[str]
     comment_text: Optional[str]
@@ -73,12 +86,7 @@ class CommentModel(CommentBase):
         orm_mode = True
 
 
-class PostModel(PostBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    user_id: int
-    comments: Optional[List[CommentModel]] = []
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
-    class Config:
-        orm_mode = True
