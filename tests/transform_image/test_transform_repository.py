@@ -61,6 +61,14 @@ async def test_get_transform_image(post, current_user, session):
 
 @pytest.mark.asyncio
 async def test_get_all_transform_images(post, current_user, session):
-    l_post = session.query(TransformPosts).filter(TransformPosts.photo_id == post.id).all()
+    t_post = session.query(TransformPosts).first()
+    l_post = session.query(TransformPosts).filter(TransformPosts.photo_id == t_post.id).all()
     response = await rep_transform.get_all_transform_images(post.id, current_user, session)
     assert response == l_post
+
+@pytest.mark.asyncio
+async def test_remove_transform_image(current_user, session):
+    t_post = session.query(TransformPosts).first()
+    response = await rep_transform.remove_transform_image(t_post.id, current_user, session)
+    assert response.id == t_post.id
+    assert response.photo_url == t_post.photo_url
