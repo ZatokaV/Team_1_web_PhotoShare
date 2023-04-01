@@ -22,6 +22,8 @@ router = APIRouter(prefix='/image/transform', tags=['Transform Image'])
 @router.post('/{image_id}', response_model=URLTransformImageResponse, status_code=status.HTTP_200_OK)
 async def transformation_for_image(image_id: int, body: TransformImageModel, db: Session = Depends(get_db)):
     image_url = await rep_transform.get_image_for_transform(image_id, db)  # 'PythonContactsApp/Irina'
+    if image_url is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
     cloudinary.config(
         cloud_name='drilpksk7',
         api_key='326193329941471',
@@ -39,13 +41,15 @@ async def save_transform_image(image_id: int, body: SaveTransformImageModel, db:
     img = await rep_transform.set_transform_image(image_id, body.url, db)
     if img is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
-    return {'data': img}
+    return img
 
 
-@router.post('/qrcode/{image_id}', status_code=status.HTTP_200_OK)
-async def get_qrcode_for_transform_image_(image_id: int, db: Session = Depends(get_db)):
+@router.get('/qrcode/{image_id}', status_code=status.HTTP_200_OK)
+async def get_qrcode_for_transform_image(image_id: int, db: Session = Depends(get_db)):
     # image_url = 'https://res.cloudinary.com/drilpksk7/image/upload/e_grayscale:100/v1/PythonContactsApp/Irina'
     image_url = await rep_transform.get_transform_image(image_id, db)
+    if image_url is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
     qr = qrcode.make(image_url.photo_url)
     buf = io.BytesIO()
     qr.save(buf)
@@ -53,7 +57,7 @@ async def get_qrcode_for_transform_image_(image_id: int, db: Session = Depends(g
     return qr_code
 
 
-@router.get('/{image_id}', response_model=List[TransformImageResponse], status_code=status.HTTP_200_OK)
+@router.get('/{image_id}', response_model=TransformImageResponse, status_code=status.HTTP_200_OK)
 async def get_transformed_image(image_id: int, db: Session = Depends(get_db)):
     return await rep_transform.get_transform_image(image_id, db)
 

@@ -26,4 +26,4 @@ async def get_transform_image(image_id: int, db: Session) -> TransformPosts | No
 
 
 async def get_all_transform_images(image_id: int, db: Session) -> List[TransformPosts]:
-    return db.query(TransformPosts).filter(TransformPosts.photo_url == image_id).all()
+    return db.query(TransformPosts).filter(TransformPosts.photo_id == image_id).all()

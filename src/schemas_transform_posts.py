@@ -103,6 +103,7 @@ class SimpleEffectTransformModel(BaseModel):
     effect: SimpleEffectType
     strength: int = Field(ge=0, le=100)
 
+
 class TransformImageModel(BaseModel):
     resize: Optional[TransformCropModel]
     rotate: Optional[RotateImageModel]
