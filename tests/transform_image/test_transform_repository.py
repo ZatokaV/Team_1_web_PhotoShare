@@ -72,3 +72,10 @@ async def test_remove_transform_image(current_user, session):
     response = await rep_transform.remove_transform_image(t_post.id, current_user, session)
     assert response.id == t_post.id
     assert response.photo_url == t_post.photo_url
+
+
+@pytest.mark.asyncio
+async def test_get_all_transform_images_for_user(current_user, session):
+    l_post = session.query(TransformPosts).all()
+    response = await rep_transform.get_all_transform_images_for_user(current_user, session)
+    assert response == l_post
