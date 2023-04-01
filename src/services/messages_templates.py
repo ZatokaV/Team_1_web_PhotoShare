@@ -1,6 +1,6 @@
 NOT_FOUND = 'Not Found'
 ALREADY_EXISTS = "Account already exists"
-SUCCESS_CREATE_USER = "User successfully created. Check your email for confirmation."
+SUCCESS_CREATE_USER = "User successfully created."
 INVALID_EMAIL = "Invalid email"
 EMAIL_NOT_CONFIRMED = "Email not confirmed"
 INVALID_PASSWORD = "Invalid password"
