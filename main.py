@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from src.database.connect import get_db
 from src.services.messages_templates import DB_CONFIG_ERROR, DB_CONNECT_ERROR, WELCOME_MESSAGE
+from src.routes import auth
 
 app = FastAPI()
 
@@ -27,6 +28,9 @@ def healthchecker(db: Session = Depends(get_db)):
 @app.get("/", name='Home')
 def read_root():
     return {"message": "Hello"}
+
+
+app.include_router(auth.router, prefix='/api')
 
 
 if __name__ == '__main__':
