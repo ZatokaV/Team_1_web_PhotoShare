@@ -1,6 +1,17 @@
 from enum import Enum
+from datetime import datetime
 from pydantic import BaseModel, Field
 from typing import Optional, List
+
+
+class TransformImageResponse(BaseModel):
+    id: int
+    photo_url: str
+    photo_id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
 
 
 class TypeResizeImage(str, Enum):
@@ -100,7 +111,7 @@ class TransformImageModel(BaseModel):
     simple_effect: Optional[List[SimpleEffectTransformModel]]
 
 
-class TransformImageResponse(BaseModel):
+class URLTransformImageResponse(BaseModel):
     url: str = ''
 
 

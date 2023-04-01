@@ -1,7 +1,15 @@
 from datetime import datetime
+from enum import Enum
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel
+from pydantic import EmailStr, Field
+
+
+class UserRole(str, Enum):
+    Admin = 'admin'
+    Moderator = 'moderator'
+    User = 'user'
 
 
 class UserBase(BaseModel):
@@ -89,4 +97,3 @@ class CommentModel(CommentBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
-
