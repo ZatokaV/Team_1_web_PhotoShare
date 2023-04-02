@@ -92,3 +92,17 @@ class TransformPosts(Base):
     created_at = Column('created_at', DateTime, default=func.now())
 
     post = relationship('Post', backref="transform_posts")
+
+
+class RatePost(Base):
+    __tablename__ = 'rates_posts'
+
+    id = Column(Integer, primary_key=True)
+    rate = Column(String, default=0)
+    photo_id = Column(Integer, ForeignKey(Post.id, ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
+    created_at = Column('created_at', DateTime, default=func.now())
+    updated_at = Column('updated_at', DateTime, default=func.now())
+
+    post = relationship('Post', backref="rates_posts")
+    user = relationship('User', backref="rates_posts")
