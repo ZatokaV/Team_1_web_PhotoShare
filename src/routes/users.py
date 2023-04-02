@@ -38,4 +38,3 @@ async def banned_user(user_id: int, current_user: User = Depends(auth_service.ge
     if banned is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
     return banned
-

@@ -1,6 +1,7 @@
+from typing import List
+
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from typing import List
 
 from src.database.models import TransformPosts, Post, User, UserRole
 

@@ -12,8 +12,10 @@ async def get_user_profile(username: str, db: Session) -> UserProfileModel:
     user_profile = None
     if this_user:
         user_profile = UserProfileModel(
-            id=this_user.id, username=this_user.username, first_name=this_user.first_name, last_name=this_user.last_name,
-            email=this_user.email, created_at=this_user.created_at, is_active=this_user.is_active, number_of_photos=this_user.number_of_photos if photo_count else 0
+            id=this_user.id, username=this_user.username, first_name=this_user.first_name,
+            last_name=this_user.last_name,
+            email=this_user.email, created_at=this_user.created_at, is_active=this_user.is_active,
+            number_of_photos=this_user.number_of_photos if photo_count else 0
         )
     return user_profile
 
