@@ -27,7 +27,7 @@ async def set_rate_for_image(image_id: int, user_rate: int, current_user: User, 
         rate = db.query(RatePost).filter(and_(RatePost.photo_id == image_id,
                                               RatePost.user_id == current_user.id)).first()
         if rate is None:
-            rate = RatePost(photo_id=image_id, user_id=current_user, rate=user_rate)
+            rate = RatePost(photo_id=image_id, user_id=current_user.id, rate=user_rate)
             db.add(rate)
         else:
             rate.rate = user_rate
@@ -75,11 +75,13 @@ async def get_rate_for_image(image_id: int, current_user: User, db: Session) -> 
     :doc-author: Trelent
     """
     if current_user.user_role == UserRole.User:
-        rates = db.query(RatePost, User.username, Post.photo_url).join(User).join(Post).filter(and_(
-            Post.id == image_id, Post.user_id == current_user.id)).first()
+        rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
+                         RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
+            and_(Post.id == image_id, Post.user_id == current_user.id)).all()
     else:
-        rates = db.query(RatePost, User.username, Post.photo_url).join(User).join(Post).filter(
-            RatePost.photo_id == image_id).first()
+        rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
+                         RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
+            RatePost.photo_id == image_id).all()
     return rates
 
 
@@ -95,16 +97,29 @@ async def get_rate_for_user(current_user: User, db: Session) -> List[RateRespons
     :doc-author: Trelent
     """
     if current_user.user_role == UserRole.User:
-        rates = db.query(RatePost, User.username, Post.photo_url).join(Post).join(User).filter(
-            RatePost.user_id == current_user.id).first()
+        rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
+                         RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
+            RatePost.user_id == current_user.id).all()
     else:
-        rates = db.query(RatePost, User.username, Post.photo_url).join(Post).join(User).first()
+        rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
+                         RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).all()
     return rates
 
 
 async def get_rate_from_user(user_id: int, current_user: User, db: Session) -> List[RateResponse]:
+    """
+    The get_rate_from_user function takes in a user_id, current_user, and db.
+    It returns a list of RateResponse objects that contain the rate information for the given user.
+
+    :param user_id: int: Identify the user who is currently logged in
+    :param current_user: User: Get the user id of the current logged in user
+    :param db: Session: Access the database
+    :return: A list of rateresponse objects
+    :doc-author: Trelent
+    """
     rates = []
     if current_user.user_role != UserRole.User:
-        rates = db.query(RatePost, Post.photo_url, User.username).join(Post).join(User).filter(
-            RatePost.user_id == current_user.id).first()
+        rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
+                         RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
+            RatePost.user_id == current_user.id).all()
     return rates
