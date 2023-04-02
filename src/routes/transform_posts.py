@@ -18,7 +18,7 @@ from src.services.messages_templates import NOT_FOUND
 from src.services.auth import auth_service
 
 
-router = APIRouter(prefix='/image/transform', tags=['Transform Image'])
+router = APIRouter(prefix='/image/transform', tags=['transform image'])
 
 
 @router.get('/user', response_model=List[TransformImageResponse], status_code=status.HTTP_200_OK)

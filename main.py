@@ -4,9 +4,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from src.database.connect import get_db
-from src.routes import auth, posts, users
+from src.routes import auth, posts, users, transform_posts, rates
 from src.services.messages_templates import DB_CONFIG_ERROR, DB_CONNECT_ERROR, WELCOME_MESSAGE
-from src.routes.transform_posts import router as transform_image
 
 app = FastAPI()
 
@@ -32,7 +31,8 @@ def read_root():
 app.include_router(auth.router, prefix='/api')
 app.include_router(posts.router, prefix='/api')
 app.include_router(users.router, prefix='/api')
-app.include_router(transform_image, prefix='/api')
+app.include_router(transform_posts.router, prefix='/api')
+app.include_router(rates.router, prefix='/api')
 
 if __name__ == '__main__':
     uvicorn.run(app="main:app", reload=True)

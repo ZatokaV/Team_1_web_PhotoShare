@@ -103,3 +103,24 @@ class CommentModel(CommentBase):
 
     class Config:
         orm_mode = True
+
+
+class RateCreate(BaseModel):
+    rate: int = Field(ge=1, le=5)
+
+
+class RateDB(BaseModel):
+    id: int
+    rate: int
+    user_id: int
+    photo_id: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class RateResponse(RateDB, BaseModel):
+    username: str
+    photo_url: str
