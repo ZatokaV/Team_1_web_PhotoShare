@@ -33,7 +33,7 @@ async def transformation_for_image(base_image_id: int, body: TransformImageModel
                                    current_user: User = Depends(
                                        auth_service.get_current_user),
                                    db: Session = Depends(get_db)):
-    # 'PythonContactsApp/Irina'
+    # image_url = 'PythonContactsApp/Irina'
     image_url = await rep_transform.get_image_for_transform(base_image_id, current_user, db)
     if image_url is None:
         raise HTTPException(

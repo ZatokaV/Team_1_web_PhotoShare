@@ -33,7 +33,24 @@ def create_list_transformation(body: TransformImageModel) -> List[dict]:
 
     if body.simple_effect:
         for item in body.simple_effect:
-            print('item', item)
             transform_list.append({'effect': f'{item.effect.name}:{item.strength}'})
 
+    if body.contrast_effect:
+        for item in body.contrast_effect:
+            transform_list.append({'effect': f'{item.effect.name}:{item.level}'})
+
+    if body.blur_effect:
+        for item in body.blur_effect:
+            t_dict = item.dict()
+            transform_item = {}
+            transform_item['effect'] = f'{item.effect.name}:{item.strength}'
+            for key in t_dict:
+                if t_dict[key] and key != 'strength' and key != 'effect':
+
+                    if type(t_dict[key]) not in (int, str):
+                        transform_item[key] = t_dict[key].name
+                    else:
+                        transform_item[key] = t_dict[key]
+            transform_list.append(transform_item)
+    print(transform_list)
     return transform_list

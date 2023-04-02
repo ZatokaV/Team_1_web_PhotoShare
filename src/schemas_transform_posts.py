@@ -104,12 +104,39 @@ class SimpleEffectTransformModel(BaseModel):
     strength: int = Field(ge=0, le=100)
 
 
+class TypeContrast(str, Enum):
+    contrast = 'contrast'
+    brightness = 'brightness'
+
+
+class ContrastEffectTransformModel(BaseModel):
+    effect: TypeContrast
+    level: int = Field(ge=-100, le=100)
+
+
+class TypeBlurEffect(str, Enum):
+    blur : 'blur'
+    blur_faces = 'blur_faces'
+    blur_region = 'blur_region'
+
+
+class BlurEffectTransformModel(BaseModel):
+    effect: TypeBlurEffect
+    strength: int = Field(ge=0, le=2000)
+    x: int = Field(ge=0)
+    y: int = Field(ge=0)
+    width: int = Field(ge=0)
+    height: int = Field(ge=0)
+
+
 class TransformImageModel(BaseModel):
     resize: Optional[TransformCropModel]
     rotate: Optional[RotateImageModel]
     radius: Optional[RadiusImageModel]
     art_effect: Optional[ArtEffectTransformModel]
     simple_effect: Optional[List[SimpleEffectTransformModel]]
+    contrast_effect: Optional[List[ContrastEffectTransformModel]]
+    blur_effect: Optional[List[BlurEffectTransformModel]]
 
 
 class URLTransformImageResponse(BaseModel):
