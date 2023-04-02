@@ -1,7 +1,8 @@
-from enum import Enum
 from datetime import datetime
-from pydantic import BaseModel, Field
+from enum import Enum
 from typing import Optional, List
+
+from pydantic import BaseModel, Field
 
 
 class TransformImageResponse(BaseModel):
@@ -115,7 +116,7 @@ class ContrastEffectTransformModel(BaseModel):
 
 
 class TypeBlurEffect(str, Enum):
-    blur : 'blur'
+    blur: 'blur'
     blur_faces = 'blur_faces'
     blur_region = 'blur_region'
 
@@ -145,4 +146,3 @@ class URLTransformImageResponse(BaseModel):
 
 class SaveTransformImageModel(BaseModel):
     url: str
-

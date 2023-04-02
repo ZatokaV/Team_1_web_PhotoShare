@@ -1,7 +1,8 @@
 import pytest
 
-from src.database.models import Post, User, TransformPosts
 import src.repository.transform_posts as rep_transform
+from src.database.models import Post, User, TransformPosts
+
 
 @pytest.fixture()
 def c_user():
@@ -65,6 +66,7 @@ async def test_get_all_transform_images(post, current_user, session):
     l_post = session.query(TransformPosts).filter(TransformPosts.photo_id == t_post.id).all()
     response = await rep_transform.get_all_transform_images(post.id, current_user, session)
     assert response == l_post
+
 
 @pytest.mark.asyncio
 async def test_remove_transform_image(current_user, session):

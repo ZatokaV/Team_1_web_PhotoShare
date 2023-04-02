@@ -1,22 +1,22 @@
-import io
 import base64
+import io
 from typing import List
-from fastapi import HTTPException, status, APIRouter, Depends
-from sqlalchemy.orm import Session
+
 import cloudinary
 import qrcode
-import qrcode.image.svg
 import qrcode.image.base
+import qrcode.image.svg
+from fastapi import HTTPException, status, APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from src.schemas_transform_posts import TransformImageModel, URLTransformImageResponse, SaveTransformImageModel, \
-    TransformImageResponse
+import src.repository.transform_posts as rep_transform
 from src.database.connect import get_db
 from src.database.models import User
-from src.services.transform_posts import create_list_transformation
-import src.repository.transform_posts as rep_transform
-from src.services.messages_templates import NOT_FOUND
+from src.schemas_transform_posts import TransformImageModel, URLTransformImageResponse, SaveTransformImageModel, \
+    TransformImageResponse
 from src.services.auth import auth_service
-
+from src.services.messages_templates import NOT_FOUND
+from src.services.transform_posts import create_list_transformation
 
 router = APIRouter(prefix='/image/transform', tags=['transform image'])
 
@@ -34,7 +34,6 @@ async def get_list_of_transformed_for_user(current_user: User = Depends(auth_ser
     :return: A list of all transformed images for the current user
     """
     return await rep_transform.get_all_transform_images_for_user(current_user, db)
-
 
 
 @router.post('/{base_image_id}', response_model=URLTransformImageResponse, status_code=status.HTTP_200_OK)
@@ -97,7 +96,8 @@ async def save_transform_image(base_image_id: int, body: SaveTransformImageModel
 
 
 @router.get('/qrcode/{transform_image_id}', status_code=status.HTTP_200_OK)
-async def get_qrcode_for_transform_image(transform_image_id: int, current_user: User = Depends(auth_service.get_current_user),
+async def get_qrcode_for_transform_image(transform_image_id: int,
+                                         current_user: User = Depends(auth_service.get_current_user),
                                          db: Session = Depends(get_db)):
     """
     The get_qrcode_for_transform_image function is used to generate a QR code for the transform image.
@@ -175,5 +175,3 @@ async def get_list_of_transformed_for_image(base_image_id: int,
     :return: A list of transformed images for the base image id
     """
     return await rep_transform.get_all_transform_images(base_image_id, current_user, db)
-
-

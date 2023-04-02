@@ -16,3 +16,4 @@ DB_CONFIG_ERROR = "Database is not configured correctly"
 DB_CONNECT_ERROR = "Error connecting to the database"
 WELCOME_MESSAGE = "Welcome to FastAPI!"
 TO_MANY_REQUESTS = 'No more than 10 requests per minute'
+PERMISSION_ERROR = "Permission Error (You are not authorized to perform this operation)"
