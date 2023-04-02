@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import Mock
+
 from sqlalchemy.orm import Session
 
 from src.database.models import User, UserRole
