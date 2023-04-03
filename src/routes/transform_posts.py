@@ -1,11 +1,4 @@
-import base64
-import io
 from typing import List
-
-import cloudinary
-import qrcode
-import qrcode.image.base
-import qrcode.image.svg
 from fastapi import HTTPException, status, APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -17,6 +10,7 @@ from src.schemas_transform_posts import TransformImageModel, URLTransformImageRe
 from src.services.auth import auth_service
 from src.services.messages_templates import NOT_FOUND
 from src.services.transform_posts import create_list_transformation
+from src.services.cloudynary import get_transformed_url, get_qrcode
 
 router = APIRouter(prefix='/image/transform', tags=['transform image'])
 
@@ -65,15 +59,8 @@ async def transformation_for_image(base_image_id: int, body: TransformImageModel
     if image_url is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
-    cloudinary.config(
-        cloud_name='drilpksk7',
-        api_key='326193329941471',
-        api_secret='1YqMfm4NEIJApzklq_lEaolH7-I',
-        secure=True
-    )
     transform_list = create_list_transformation(body)
-    url = cloudinary.CloudinaryImage(image_url).build_url(
-        transformation=transform_list)
+    url = get_transformed_url(image_url, transform_list)
     return {'url': url}
 
 
@@ -118,10 +105,7 @@ async def get_qrcode_for_transform_image(transform_image_id: int,
     if image_url is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
-    qr = qrcode.make(image_url.photo_url)
-    buf = io.BytesIO()
-    qr.save(buf)
-    qr_code = base64.b64encode(buf.getvalue()).decode('ascii')
+    qr_code = get_qrcode(image_url.photo_url)
     return qr_code
 
 
