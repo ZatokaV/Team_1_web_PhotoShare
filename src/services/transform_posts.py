@@ -12,7 +12,6 @@ def create_list_transformation(body: TransformImageModel) -> List[dict]:
 
     :param body: TransformImageModel: Create a list of dictionaries that are used to transform the image
     :return: A list of dictionaries that can be used to create a transformation
-    :doc-author: Trelent
     """
     transform_list = []
 
