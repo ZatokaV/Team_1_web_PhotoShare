@@ -96,29 +96,48 @@ async def remove_transform_image(image_id: int, current_user: User, db: Session)
     return img
 
 
-async def get_all_transform_images(image_id: int, current_user: User, db: Session) -> List[TransformPosts]:
+async def get_all_transform_images(image_id: int, skip: int, limit: int,
+                                   current_user: User, db: Session) -> List[TransformPosts]:
     """
-    The get_all_transform_images function returns a list of all transform images for the given image id.
-        If the current user is an admin, then it will return all transform images for that image id.
-        Otherwise, it will only return those transform images that belong to the current user.
+    The get_all_transform_images function returns a list of all transform images for the given image id. Args:
+    image_id (int): The id of the original post. skip (int): The number of posts to be skipped. Default is 0,
+    which means no posts are skipped and all are returned. This is used in pagination to get subsequent pages after
+    the first page has been retrieved by setting skip = limit * (page_number - 1). For example, if there are 10 posts
+    per page, and you want to get the second page, you would set skip = 10 because
 
-    :param image_id: int: Filter the transform posts table by photo_id
+    :param image_id: int: Get the image id of the image that is being transformed
+    :param skip: int: Skip the first n number of items in a list
+    :param limit: int: Limit the number of images returned
     :param current_user: User: Check if the user is an admin or not
     :param db: Session: Access the database
-    :return: A list of all the images that are transformed from an image
-    :doc-author: Trelent
+    :return: A list of all the images that have been transformed
     """
     if current_user.user_role == UserRole.Admin.name:
-        list_image = db.query(TransformPosts).filter(TransformPosts.photo_id == image_id).all()
+        list_image = db.query(TransformPosts).filter(TransformPosts.photo_id == image_id).offset(skip).limit(limit)\
+            .all()
     else:
         list_image = db.query(TransformPosts).join(Post).filter(and_(Post.id == image_id,
-                                                                     Post.user_id == current_user.id)).all()
+                                                                     Post.user_id == current_user.id)).offset(skip)\
+            .limit(limit).all()
     return list_image
 
 
-async def get_all_transform_images_for_user(current_user: User, db: Session) -> List[TransformPosts]:
+async def get_all_transform_images_for_user(skip: int, limit: int,
+                                            current_user: User, db: Session) -> List[TransformPosts]:
+    """
+    The get_all_transform_images_for_user function returns a list of all transform images for the current user.
+        If the current user is an admin, then it will return all transform images in the database.
+        Otherwise, it will only return those that belong to that specific user.
+
+    :param skip: int: Skip the first n number of items in a list
+    :param limit: int: Limit the number of images returned
+    :param current_user: User: Determine if the user is an admin or not
+    :param db: Session: Access the database
+    :return: A list of transform posts objects
+    """
     if current_user.user_role == UserRole.Admin.name:
-        list_image = db.query(TransformPosts).all()
+        list_image = db.query(TransformPosts).offset(skip).limit(limit).all()
     else:
-        list_image = db.query(TransformPosts).join(Post).filter(Post.user_id == current_user.id).all()
+        list_image = db.query(TransformPosts).join(Post).filter(Post.user_id == current_user.id).offset(skip)\
+            .limit(limit).all()
     return list_image

@@ -9,17 +9,17 @@ from src.schemas import RateResponse
 
 async def set_rate_for_image(image_id: int, user_rate: int, current_user: User, db: Session) -> RatePost:
     """
-    The set_rate_for_image function is used to set a rate for an image.
-        The function takes in the following parameters:
-            - image_id: int, the id of the image that will be rated.
-            - body: RateCreate, contains information about how to rate an image (rate).
-            - current_user: User, contains information about who is rating this photo (user_id).
+    The set_rate_for_image function takes in an image_id, a user_rate, the current user and a database session. It
+    then queries the Post table for any posts that match the given image id and are not posted by the current user.
+    If there is such a post it will query for any rates on that post by this particular user. If there is no rate
+    yet, it will create one with this users rating of said photo. Otherwise it updates their previous rating to
+    reflect their new one.
 
-    :param image_id: int: Identify the image that is being rated
-    :param body: RateCreate: Get the rate value from the request body
-    :param current_user: User: Get the current user that is logged in
+    :param image_id: int: Identify the image that we want to rate
+    :param user_rate: int: Set the rate of the image
+    :param current_user: User: Get the id of the user who is currently logged in
     :param db: Session: Access the database
-    :return: A rate object
+    :return: A ratepost object
     """
     post = db.query(Post).filter(and_(Post.id == image_id, Post.user_id != current_user.id)).first()
     rate = None
@@ -60,58 +60,68 @@ async def remove_rate_for_image(rate_id: int, current_user: User, db: Session) -
     return rate
 
 
-async def get_rate_for_image(image_id: int, current_user: User, db: Session) -> List[RateResponse]:
+async def get_rate_for_image(image_id: int, skip: int, limit: int, current_user: User,
+                             db: Session) -> List[RateResponse]:
     """
-    The get_rate_for_image function is used to get the rate for a specific image. The function takes in an image_id,
-    current_user and db as parameters. If the user role of the current user is User, then it will query RatePost,
-    User and Post tables using join() method to filter out all rows where post id matches with given image id and
-    post's user id matches with current users' ID. It will return only one row from database which satisfies these
-    conditions.
+    The get_rate_for_image function returns a list of rates for the image with the given id.
+        If current_user is an admin, all rates are returned. Otherwise, only those created by current_user are returned.
 
-    :param image_id: int: Get the image id from the database
-    :param current_user: User: Get the current user's information
+    :param image_id: int: Filter the rate_posts table by image id
+    :param skip: int: Skip the first n rows in a result set before beginning to return rows
+    :param limit: int: Limit the number of results returned
+    :param current_user: User: Check if the user is an admin or not
     :param db: Session: Access the database
-    :return: The rate of the image
+    :return: The list of rates for the image with the given id
     """
     if current_user.user_role == UserRole.User.name:
         rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
                          RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
-            and_(Post.id == image_id, Post.user_id == current_user.id)).all()
+            and_(Post.id == image_id, Post.user_id == current_user.id)).offset(skip).limit(limit).all()
     else:
         rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
                          RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
-            RatePost.photo_id == image_id).all()
+            RatePost.photo_id == image_id).offset(skip).limit(limit).all()
     return rates
 
 
-async def get_rate_for_user(current_user: User, db: Session) -> List[RateResponse]:
+async def get_rate_for_user(skip: int, limit: int, current_user: User, db: Session) -> List[RateResponse]:
     """
-    The get_rate_for_user function takes in a current_user and db object, and returns a list of RateResponse objects.
-    The function queries the database for all rate posts that have been created by the user with id equal to current_user.id.
+    The get_rate_for_user function returns a list of rate objects for the current user. Args: skip (int): The number
+    of items to skip before starting to collect the result set. limit (int): The numbers of items to return after
+    skipping &quot;skip&quot; elements. current_user (User): A User object representing the currently logged in user,
+    used for authorization purposes.  This is passed from FastAPI's dependency injection system and should not be
+    manually created by users of this function!  See
+    https://fastapi.tiangolo.com/advanced/dependencies/#injecting-security-sc
 
+    :param skip: int: Skip the first n records in the query
+    :param limit: int: Limit the number of results returned
     :param current_user: User: Get the current user from the database
     :param db: Session: Access the database
-    :return: A list of rateresponse objects
+    :return: A list of rate responses
     """
     rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
                      RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
-                     RatePost.user_id == current_user.id).all()
+                     RatePost.user_id == current_user.id).offset(skip).limit(limit).all()
     return rates
 
 
-async def get_rate_from_user(user_id: int, current_user: User, db: Session) -> List[RateResponse]:
+async def get_rate_from_user(user_id: int, skip: int, limit: int, current_user: User,
+                             db: Session) -> List[RateResponse]:
     """
-    The get_rate_from_user function takes in a user_id, current_user, and db.
-    It returns a list of RateResponse objects that contain the rate information for the given user.
+    The get_rate_from_user function takes in a user_id, skip, limit, current_user and db. It returns a list of
+    RateResponse objects. If the current user is not an admin or moderator then it will query the database for all
+    rates that have been made by the specified user id and return them as RateResponse objects.
 
-    :param user_id: int: Identify the user who is currently logged in
-    :param current_user: User: Get the user id of the current logged in user
+    :param user_id: int: Get the user id of the user who is logged in
+    :param skip: int: Skip the first n records
+    :param limit: int: Limit the number of results returned
+    :param current_user: User: Check if the user is an admin or not
     :param db: Session: Access the database
-    :return: A list of rateresponse objects
+    :return: The rate of a user
     """
     rates = []
     if current_user.user_role != UserRole.User.name:
         rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
                          RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
-            RatePost.user_id == user_id).all()
+            RatePost.user_id == user_id).offset(skip).limit(limit).all()
     return rates

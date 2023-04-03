@@ -112,7 +112,7 @@ async def test_get_rate_for_image(post, current_user, second_user, admin_user, s
     rates =[]
     rates.append(await rep_rate.set_rate_for_image(post.id, 4, second_user, session))
     rates.append(await rep_rate.set_rate_for_image(post.id, 5, admin_user, session))
-    response = await rep_rate.get_rate_for_image(post.id, current_user, session)
+    response = await rep_rate.get_rate_for_image(post.id,  0, 20, current_user, session)
     assert len(response) == len(rates)
 
 
@@ -121,7 +121,7 @@ async def test_get_rate_for_image_as_admin(post, current_user, second_user, admi
     rates =[]
     rates.append(await rep_rate.set_rate_for_image(post.id, 4, second_user, session))
     rates.append(await rep_rate.set_rate_for_image(post.id, 5, admin_user, session))
-    response = await rep_rate.get_rate_for_image(post.id, admin_user, session)
+    response = await rep_rate.get_rate_for_image(post.id, 0, 20, admin_user, session)
     assert len(response) == len(rates)
 
 
@@ -130,27 +130,27 @@ async def test_get_rate_for_image_as_other_user(post, current_user, second_user,
     rates =[]
     rates.append(await rep_rate.set_rate_for_image(post.id, 4, second_user, session))
     rates.append(await rep_rate.set_rate_for_image(post.id, 5, admin_user, session))
-    response = await rep_rate.get_rate_for_image(post.id, second_user, session)
+    response = await rep_rate.get_rate_for_image(post.id, 0, 20, second_user, session)
     assert response == []
 
 
 @pytest.mark.asyncio
 async def test_get_rate_for_user(second_user, post, session):
-    response = await rep_rate.get_rate_for_user(second_user, session)
+    response = await rep_rate.get_rate_for_user(0, 20, second_user, session)
     assert len(response) == 1
     assert response[0].rate == '4'
 
 
 @pytest.mark.asyncio
 async def test_get_rate_for_user_as_admin(admin_user, post, session):
-    response = await rep_rate.get_rate_for_user(admin_user, session)
+    response = await rep_rate.get_rate_for_user(0, 20, admin_user, session)
     assert len(response) == 1
     assert response[0].rate == '5'
 
 
 @pytest.mark.asyncio
 async def test_get_rate_from_user(admin_user, second_user, session):
-    response = await rep_rate.get_rate_from_user(second_user.id, admin_user, session)
+    response = await rep_rate.get_rate_from_user(second_user.id, 0, 20, admin_user, session)
     assert len(response) == 1
     assert response[0].rate == '4'
     assert response[0].user_id == second_user.id
@@ -158,5 +158,5 @@ async def test_get_rate_from_user(admin_user, second_user, session):
 
 @pytest.mark.asyncio
 async def test_get_rate_from_user_not_admin(current_user, second_user, session):
-    response = await rep_rate.get_rate_from_user(second_user.id, current_user, session)
+    response = await rep_rate.get_rate_from_user(second_user.id, 0, 20, current_user, session)
     assert response == []
