@@ -12,7 +12,7 @@ from src.services.messages_templates import NOT_FOUND
 router = APIRouter(prefix='/rate', tags=['rate posts'])
 
 
-@router.post('/{image_id}', response_model=RateDB, status_code=status.HTTP_200_OK)
+@router.post('/{image_id}', response_model=RateDB, status_code=status.HTTP_201_CREATED)
 async def set_rates_for_posts(image_id: int, body: RateCreate,
                               current_user: User = Depends(auth_service.get_current_user),
                               db: Session = Depends(get_db)):
