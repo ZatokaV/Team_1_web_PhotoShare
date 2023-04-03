@@ -22,18 +22,24 @@ router = APIRouter(prefix='/image/transform', tags=['transform image'])
 
 
 @router.get('/user', response_model=List[TransformImageResponse], status_code=status.HTTP_200_OK)
-async def get_list_of_transformed_for_user(current_user: User = Depends(auth_service.get_current_user),
+async def get_list_of_transformed_for_user(skip: int = 0, limit: int = 20,
+                                           current_user: User = Depends(auth_service.get_current_user),
                                            db: Session = Depends(get_db)):
     """
-    The get_list_of_transformed_for_user function returns a list of all the transformed images for a given user.
-        The function takes in an optional current_user parameter, which is the currently logged-in user.
-        If no current_user is provided, then it will default to None.
+    The get_list_of_transformed_for_user function returns a list of transformed images for the current user.
+        The function takes in three parameters: skip, limit, and current_user.
+        Skip is an integer that represents how many items to skip before returning results (defaults to 0).
+        Limit is an integer that represents how many items to return after skipping (defaults to 20).
+        Current_user is a User object representing the currently logged-in user.
 
-    :param current_user: User: Get the user who is currently logged in
-    :param db: Session: Get the database session
+    :param skip: int: Skip a number of items in the database
+    :param limit: int: Limit the number of images returned
+    :param current_user: User: Get the current user from the database
+    :param db: Session: Pass in the database session to the function
     :return: A list of all transformed images for the current user
+    :doc-author: Trelent
     """
-    return await rep_transform.get_all_transform_images_for_user(current_user, db)
+    return await rep_transform.get_all_transform_images_for_user(skip, limit, current_user, db)
 
 
 @router.post('/{base_image_id}', response_model=URLTransformImageResponse, status_code=status.HTTP_200_OK)
@@ -42,12 +48,12 @@ async def transformation_for_image(base_image_id: int, body: TransformImageModel
                                        auth_service.get_current_user),
                                    db: Session = Depends(get_db)):
     """
-    The transformation_for_image function takes in a base_image_id, body, current_user and db.
-    The function then calls the get_image_for transform method from the repos/transformations.py file to retrieve an image url for transformation.
-    If no image is found with that id, it raises a 404 error message saying &quot;Image not found&quot;.
-    Otherwise it configures cloudinary using my api key and secret key (which I have hidden).
-    It then creates a list of transformations based on what was passed into the body of this request (the user's desired transformations).
-    Finally it builds an url for that
+    The transformation_for_image function takes in a base_image_id, body, current_user and db. The function then
+    calls the get_image_for transform method from the repos/transformations.py file to retrieve an image url for
+    transformation. If no image is found with that id, it raises a 404 error message saying &quot;Image not
+    found&quot;. Otherwise, it configures cloudinary using my api key and secret key (which I have hidden). It then
+    creates a list of transformations based on what was passed into the body of this request (the user's desired
+    transformations). Finally, it builds an url for that
 
     :param base_image_id: int: Get the image from the database
     :param body: TransformImageModel: Get the transformation parameters from the request body
@@ -73,8 +79,7 @@ async def transformation_for_image(base_image_id: int, body: TransformImageModel
 
 @router.post('/save/{base_image_id}', response_model=TransformImageResponse, status_code=status.HTTP_201_CREATED)
 async def save_transform_image(base_image_id: int, body: SaveTransformImageModel,
-                               current_user: User = Depends(
-                                   auth_service.get_current_user),
+                               current_user: User = Depends(auth_service.get_current_user),
                                db: Session = Depends(get_db)):
     """
     The save_transform_image function is used to save a transformed image.
@@ -124,15 +129,14 @@ async def get_qrcode_for_transform_image(transform_image_id: int,
 async def get_transformed_image(transform_image_id: int, current_user: User = Depends(auth_service.get_current_user),
                                 db: Session = Depends(get_db)):
     """
-    The get_transformed_image function returns a transformed image.
-        The function takes in the transform_image_id and current user as parameters.
-        It then calls the get_transform_image function from repos/transformations to retrieve the transformed image.
-        If no such image is found, it raises an HTTPException with status code 404 and detail NOT FOUND.
+    The get_transformed_image function returns a transformed image by its id. The function takes in the
+    transform_image_id as an integer and uses it to query the database for a transformed image. If no such image is
+    found, then an HTTPException is raised with status code 404 and detail message NOT FOUND.
 
-    :param transform_image_id: int: Get the image id from the url
-    :param current_user: User: Get the current user from the auth_service
+    :param transform_image_id: int: Get the image from the database
+    :param current_user: User: Get the current user from the database
     :param db: Session: Pass the database session to the function
-    :return: A transformed image
+    :return: A transform image object
     """
     img = await rep_transform.get_transform_image(transform_image_id, current_user, db)
     if img is None:
@@ -161,17 +165,20 @@ async def remove_transformed_image(transform_image_id: int, current_user: User =
 
 
 @router.get('/all/{base_image_id}', response_model=List[TransformImageResponse], status_code=status.HTTP_200_OK)
-async def get_list_of_transformed_for_image(base_image_id: int,
+async def get_list_of_transformed_for_image(base_image_id: int, skip: int = 0, limit: int = 20,
                                             current_user: User = Depends(auth_service.get_current_user),
                                             db: Session = Depends(get_db)):
     """
-    The get_list_of_transformed_for_image function returns a list of all transformed images for the given base image.
-        The function takes in an integer representing the id of the base image and returns a list of dictionaries, each
-        dictionary containing information about one transformed image.
+    The get_list_of_transformed_for_image function returns a list of transformed images for the given base image. The
+    function takes in an integer representing the id of the base image, and two optional parameters: skip and limit.
+    Skip is used to specify how many results to skip before returning results, while limit specifies how many results
+    should be returned at most.
 
-    :param base_image_id: int: Get the base image id from the url
-    :param current_user: User: Get the user that is currently logged in
-    :param db: Session: Access the database
-    :return: A list of transformed images for the base image id
+    :param base_image_id: int: Get the base image id from the database
+    :param skip: int: Skip the first n images in the list
+    :param limit: int: Limit the number of results returned
+    :param current_user: User: Get the current user from the database
+    :param db: Session: Pass the database session to the function
+    :return: A list of transformed images for a given base image
     """
-    return await rep_transform.get_all_transform_images(base_image_id, current_user, db)
+    return await rep_transform.get_all_transform_images(base_image_id, skip, limit, current_user, db)
