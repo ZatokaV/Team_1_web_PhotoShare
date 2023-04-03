@@ -24,7 +24,6 @@ def token(c_user, client, session, monkeypatch):
 @pytest.fixture()
 def post_id(c_user, token, session):
     cur_user = session.query(User).filter(User.email == c_user['email']).first()
-    print('USER ', cur_user.id, cur_user.username)
     post = session.query(Post).first()
     if post is None:
         post = Post(photo_url='PythonContactsApp/Irina', description='My new photo', user_id=cur_user.id)
