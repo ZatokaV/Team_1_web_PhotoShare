@@ -50,7 +50,7 @@ async def remove_rate_for_image(rate_id: int, current_user: User, db: Session) -
     :param db: Session: Access the database
     :return: None
     """
-    if current_user.user_role == UserRole.User:
+    if current_user.user_role == UserRole.User.name:
         rate = db.query(RatePost).filter(and_(RatePost.id == rate_id, RatePost.user_id == current_user.id)).first()
     else:
         rate = db.query(RatePost).filter(RatePost.id == rate_id).first()
@@ -72,9 +72,8 @@ async def get_rate_for_image(image_id: int, current_user: User, db: Session) -> 
     :param current_user: User: Get the current user's information
     :param db: Session: Access the database
     :return: The rate of the image
-    :doc-author: Trelent
     """
-    if current_user.user_role == UserRole.User:
+    if current_user.user_role == UserRole.User.name:
         rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
                          RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
             and_(Post.id == image_id, Post.user_id == current_user.id)).all()
@@ -87,22 +86,16 @@ async def get_rate_for_image(image_id: int, current_user: User, db: Session) -> 
 
 async def get_rate_for_user(current_user: User, db: Session) -> List[RateResponse]:
     """
-    The get_rate_for_user function returns a list of RateResponse objects.
-        If the current user is an admin, it will return all rate posts in the database.
-        If the current user is a regular user, it will only return their own rate posts.
+    The get_rate_for_user function takes in a current_user and db object, and returns a list of RateResponse objects.
+    The function queries the database for all rate posts that have been created by the user with id equal to current_user.id.
 
-    :param current_user: User: Get the user_id of the current user
-    :param db: Session: Connect to the database and query it
-    :return: The rate of the current user
-    :doc-author: Trelent
+    :param current_user: User: Get the current user from the database
+    :param db: Session: Access the database
+    :return: A list of rateresponse objects
     """
-    if current_user.user_role == UserRole.User:
-        rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
-                         RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
-            RatePost.user_id == current_user.id).all()
-    else:
-        rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
-                         RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).all()
+    rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
+                     RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
+                     RatePost.user_id == current_user.id).all()
     return rates
 
 
@@ -115,11 +108,10 @@ async def get_rate_from_user(user_id: int, current_user: User, db: Session) -> L
     :param current_user: User: Get the user id of the current logged in user
     :param db: Session: Access the database
     :return: A list of rateresponse objects
-    :doc-author: Trelent
     """
     rates = []
-    if current_user.user_role != UserRole.User:
+    if current_user.user_role != UserRole.User.name:
         rates = db.query(RatePost.id, RatePost.rate, RatePost.user_id, User.username, RatePost.photo_id, Post.photo_url,
                          RatePost.created_at, RatePost.updated_at).select_from(Post).join(RatePost).join(User).filter(
-            RatePost.user_id == current_user.id).all()
+            RatePost.user_id == user_id).all()
     return rates
