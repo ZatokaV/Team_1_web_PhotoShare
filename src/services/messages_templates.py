@@ -1,4 +1,5 @@
 NOT_FOUND = 'Not Found'
+NOT_FOUND_OR_DENIED = 'Not found or insufficient permission'
 ALREADY_EXISTS = "Account already exists"
 SUCCESS_CREATE_USER = "User successfully created."
 INVALID_EMAIL = "Invalid email"

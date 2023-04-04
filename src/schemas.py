@@ -19,12 +19,17 @@ class UserCreate(UserBase):
     password: str = Field(min_length=6)
 
 
+class UserUpdate(UserBase):
+    is_active: bool
+    user_role: str
+
+
 class UserModel(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
     is_active: bool
-    user_role: Enum
+    user_role: str
 
     class Config:
         orm_mode = True
