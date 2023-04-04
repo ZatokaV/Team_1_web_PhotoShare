@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 import src.repository.users as repository_users
 from src.database.connect import get_db
-from src.database.models import User
+from src.database.models import User, UserRole
 from src.schemas import UserModel, UserProfileModel
 from src.services.auth import auth_service
 from src.services.messages_templates import NOT_FOUND
