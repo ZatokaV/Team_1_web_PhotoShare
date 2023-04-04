@@ -8,6 +8,7 @@ from src.database.connect import get_db
 from src.repository import users as repository_users
 from src.schemas import UserCreate, TokenModel
 from src.services.auth import auth_service
+from src.services.roles import RoleChecker
 from src.services.messages_templates import ALREADY_EXISTS, SUCCESS_CREATE_USER, INVALID_PASSWORD, INVALID_EMAIL, \
     INVALID_TOKEN
 
