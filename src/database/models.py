@@ -27,7 +27,7 @@ class User(Base):
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column('updated_at', DateTime, default=func.now())
     is_active = Column(Boolean, default=True)
-    user_role = Column(Integer, default=UserRole.User)
+    user_role = Column(Integer, default=UserRole.User.name)
 
 
 post_tag = Table('post_tag',
