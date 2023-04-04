@@ -38,7 +38,6 @@ class UserModel(UserBase):
 class UserProfileModel(UserBase):
     id: int
     created_at: datetime
-    number_of_photos: int
     is_active: bool
 
     class Config:

@@ -5,6 +5,7 @@ from src.database.models import User, UserRole
 from src.services.auth import auth_service
 from src.services.messages_templates import FORBIDDEN_ACCESS
 
+
 class RoleChecker:
     def __init__(self, allowed_roles: List[UserRole]):
         self.allowed_roles = allowed_roles

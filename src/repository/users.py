@@ -78,4 +78,11 @@ async def banned_user(user_id: int, current_user: User, db: Session):
             to_baned.is_active = False
             db.commit()
         return to_baned
-    return PERMISSION_ERROR
+
+
+# async def banned_user(user_id: int, db: Session):
+#     to_baned = db.query(User).filter(User.id == user_id).first()
+#     if to_baned:
+#         to_baned.is_active = False
+#         db.commit()
+#     return to_baned
