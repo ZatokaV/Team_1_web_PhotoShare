@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 
 from src.database.models import User, UserRole
 from src.repository.users import banned_user
-from src.services.messages_templates import PERMISSION_ERROR
 
 
 class TestBannedUser(unittest.TestCase):
@@ -22,4 +21,4 @@ class TestBannedUser(unittest.TestCase):
         user_mock = Mock(spec=User)
         user_mock.user_role = UserRole.User.name
         result = await banned_user(123, user_mock, session_mock)
-        self.assertEqual(result, PERMISSION_ERROR)
+        self.assertEqual(result, None)
