@@ -3,11 +3,12 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from src.database.connect import get_db
-from src.database.models import User
+from src.database.models import User, UserRole
 from src.schemas import RateCreate, RateDB, RateResponse
 from src.services.auth import auth_service
 import src.repository.rates as rep_rates
 from src.services.messages_templates import NOT_FOUND
+from src.services.roles import RoleChecker
 
 router = APIRouter(prefix='/rate', tags=['rate posts'])
 
@@ -97,7 +98,8 @@ async def get_rates_for_current_user(skip: int = 0, limit: int = 20,
     return await rep_rates.get_rate_for_user(skip, limit, current_user, db)
 
 
-@router.get('/user/{user_id}', response_model=List[RateResponse], status_code=status.HTTP_200_OK)
+@router.get('/user/{user_id}', response_model=List[RateResponse],
+            dependencies=[Depends(RoleChecker([UserRole.Admin.name, UserRole.Moderator.name]))], status_code=status.HTTP_200_OK)
 async def get_rate_from_user(user_id: int, skip: int = 0, limit: int = 20,
                              current_user: User = Depends(auth_service.get_current_user),
                              db: Session = Depends(get_db)):
