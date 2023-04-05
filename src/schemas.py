@@ -89,24 +89,27 @@ class PostModel(PostBase):
         orm_mode = True
 
 
+class CommentModel(BaseModel):
+    comment_text: str = Field("comment_text")
+
+
 class CommentBase(BaseModel):
-    comment_url: Optional[str]
-    comment_text: Optional[str]
-
-
-class CommentCreate(CommentBase):
-    pass
-
-
-class CommentModel(CommentBase):
     id: int
+    comment_text: Optional[str]
     created_at: datetime
-    updated_at: datetime
+    updated_at: datetime | None
     user_id: int
-    post_id: int
 
     class Config:
         orm_mode = True
+
+
+class CommentResponse(BaseModel):
+    comment: CommentBase
+    user_first_name: str
+    user_last_name: str
+    username: str
+    user_avatar: str | None
 
 
 class RateCreate(BaseModel):
