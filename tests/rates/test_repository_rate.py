@@ -1,5 +1,4 @@
 import pytest
-from sqlalchemy import and_
 
 import src.repository.rates as rep_rate
 from src.database.models import Post, User, RatePost, UserRole
@@ -13,8 +12,8 @@ def c_user():
 
 @pytest.fixture()
 def sec_user():
-    return {"username": "test1", "email": "test1@example.com", "password": "testtest", "first_name": "test1",
-            "last_name": "test1", "user_role": "Admin"}
+    return {"username": "admin1", "email": "admin1@example.com", "password": "testtest", "first_name": "admin1",
+            "last_name": "admin1", "user_role": "Admin"}
 
 
 @pytest.fixture()
@@ -138,21 +137,21 @@ async def test_get_rate_for_image_as_other_user(post, current_user, second_user,
 async def test_get_rate_for_user(second_user, post, session):
     response = await rep_rate.get_rate_for_user(0, 20, second_user, session)
     assert len(response) == 1
-    assert response[0].rate == '4'
+    assert response[0].rate == 4
 
 
 @pytest.mark.asyncio
 async def test_get_rate_for_user_as_admin(admin_user, post, session):
     response = await rep_rate.get_rate_for_user(0, 20, admin_user, session)
     assert len(response) == 1
-    assert response[0].rate == '5'
+    assert response[0].rate == 5
 
 
 @pytest.mark.asyncio
 async def test_get_rate_from_user(admin_user, second_user, session):
     response = await rep_rate.get_rate_from_user(second_user.id, 0, 20, admin_user, session)
     assert len(response) == 1
-    assert response[0].rate == '4'
+    assert response[0].rate == 4
     assert response[0].user_id == second_user.id
 
 

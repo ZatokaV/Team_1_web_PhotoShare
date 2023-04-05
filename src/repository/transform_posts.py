@@ -25,7 +25,7 @@ async def get_image_for_transform(image_id: int, current_user: User, db: Session
     image_path = None
     if image:
         image_path = image.photo_url
-    await get_search_posts('qwert', 'date', 1, 0, 20, db)
+    await get_search_posts('qwe', 'date', 1, 0, 20, db)
     return image_path
 
 

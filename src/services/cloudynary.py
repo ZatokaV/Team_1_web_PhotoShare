@@ -15,6 +15,9 @@ cloudinary.config(
     )
 
 
+def get_url(image_url: str):
+    return cloudinary.CloudinaryImage(image_url).build_url()
+
 def get_transformed_url(image_url: str, transform_list: list[dict]):
     """
     The get_transformed_url function takes in an image_url and a list of transformations,

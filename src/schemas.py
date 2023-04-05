@@ -131,3 +131,31 @@ class RateDB(BaseModel):
 class RateResponse(RateDB, BaseModel):
     username: str
     photo_url: str
+
+
+class SortType(str, Enum):
+    rate = 'rate'
+    date = 'date'
+
+
+class SearchModel(BaseModel):
+    search_str: str = Field(default='')
+    sort: SortType = Field(default=SortType.date)
+    sort_type: int = Field(ge=-1, le=1, default=1)
+
+
+class TagType(BaseModel):
+    id: int
+    tag: str
+
+
+class SearchResponse(PostBase, BaseModel):
+    id: int
+    photo_url: str
+    description: Optional[str]
+    user_id: int
+    username: str
+    created_at: datetime
+    updated_at: datetime
+    rate: int
+    tags: Optional[List[TagType]]

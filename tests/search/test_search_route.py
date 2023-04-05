@@ -1,7 +1,6 @@
 import pytest
 
 from src.database.models import Post, User, UserRole
-from src.services.messages_templates import FORBIDDEN_ACCESS
 
 
 @pytest.fixture()
@@ -18,6 +17,7 @@ def sec_user():
 
 @pytest.fixture()
 def token(sec_user, client, session, monkeypatch):
+
     client.post("/api/auth/signup", json=sec_user)
     c: User = session.query(User).filter(User.email == sec_user['email']).first()
     c.user_role = UserRole.Admin.name
@@ -53,43 +53,10 @@ def post_id(c_user, cur_token, session):
     return post.id
 
 
-def test_set_rates_for_posts(client, token, post_id):
-    response = client.post(f'/api/rate/{post_id}', json={'rate': 3}, headers={"Authorization": f"Bearer {token}"})
-    assert response.status_code == 201, response.text
-    data = response.json()
-    assert data['rate'] == 3
-    assert data['photo_id'] == post_id
-
-
-def test_get_rates_for_current_user(client, token):
-    response = client.get('/api/rate', headers={"Authorization": f"Bearer {token}"})
+def test_search_posts(client, token, post_id):
+    response = client.post('/api/search', json={"search_str": "My", "sort": "rate", "sort_type": 1},
+                           headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200, response.text
     data = response.json()
-    assert type(data) == list
-    assert len(data) == 1
+    assert data[0]['id'] == post_id
 
-
-def test_get_rate_from_user(client, token):
-    response = client.get('/api/rate/user/1', headers={"Authorization": f"Bearer {token}"})
-    assert response.status_code == 200, response.text
-    data = response.json()
-    assert type(data) == list
-
-
-def test_get_rate_from_user_as_user(client, cur_token):
-    response = client.get('/api/rate/user/1', headers={"Authorization": f"Bearer {cur_token}"})
-    assert response.status_code == 403, response.text
-    data = response.json()
-    assert data['detail'] == FORBIDDEN_ACCESS
-
-
-def test_get_rates_for_image(client, token, post_id):
-    response = client.get(f'/api/rate/{post_id}', headers={"Authorization": f"Bearer {token}"})
-    assert response.status_code == 200, response.text
-    data = response.json()
-    assert type(data) == list
-
-
-def test_remove_rate(client, token):
-    response = client.delete('/api/rate/1', headers={"Authorization": f"Bearer {token}"})
-    assert response.status_code == 204, response.text
