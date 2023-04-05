@@ -55,17 +55,16 @@ class Post(Base):
     user = relationship('User', backref="photos")
 
 
-class Comments(Base):
+class Comment(Base):
     __tablename__ = "comments"
 
     id = Column(Integer, primary_key=True)
-    comment_url = Column(String())
     comment_text = Column(Text)
     created_at = Column('created_at', DateTime, default=func.now())
-    updated_at = Column('updated_at', DateTime, default=func.now())
+    updated_at = Column('updated_at', DateTime)
 
     post_id = Column(Integer, ForeignKey(Post.id, ondelete="CASCADE"))
-    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey(User.id))
 
     user = relationship('User', backref="comments")
     post = relationship('Post', backref="comments")
