@@ -1,5 +1,6 @@
 import enum
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, func, Table, Boolean, Enum
+
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, func, Table, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import DateTime
@@ -26,7 +27,7 @@ class User(Base):
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column('updated_at', DateTime, default=func.now())
     is_active = Column(Boolean, default=True)
-    user_role = Column(Integer, default=UserRole.User)
+    user_role = Column(Integer, default=UserRole.User.name)
 
 
 post_tag = Table('post_tag',
@@ -54,17 +55,16 @@ class Post(Base):
     user = relationship('User', backref="photos")
 
 
-class Comments(Base):
+class Comment(Base):
     __tablename__ = "comments"
 
     id = Column(Integer, primary_key=True)
-    comment_url = Column(String())
     comment_text = Column(Text)
     created_at = Column('created_at', DateTime, default=func.now())
-    updated_at = Column('updated_at', DateTime, default=func.now())
+    updated_at = Column('updated_at', DateTime)
 
     post_id = Column(Integer, ForeignKey(Post.id, ondelete="CASCADE"))
-    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey(User.id))
 
     user = relationship('User', backref="comments")
     post = relationship('Post', backref="comments")
@@ -91,3 +91,17 @@ class TransformPosts(Base):
     created_at = Column('created_at', DateTime, default=func.now())
 
     post = relationship('Post', backref="transform_posts")
+
+
+class RatePost(Base):
+    __tablename__ = 'rates_posts'
+
+    id = Column(Integer, primary_key=True)
+    rate = Column(String, default=0)
+    photo_id = Column(Integer, ForeignKey(Post.id, ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
+    created_at = Column('created_at', DateTime, default=func.now())
+    updated_at = Column('updated_at', DateTime, default=func.now())
+
+    post = relationship('Post', backref="rates_posts")
+    user = relationship('User', backref="rates_posts")

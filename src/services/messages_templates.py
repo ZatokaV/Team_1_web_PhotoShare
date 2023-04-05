@@ -1,6 +1,7 @@
 NOT_FOUND = 'Not Found'
+NOT_FOUND_OR_DENIED = 'Not found or insufficient permission'
 ALREADY_EXISTS = "Account already exists"
-SUCCESS_CREATE_USER = "User successfully created. Check your email for confirmation."
+SUCCESS_CREATE_USER = "User successfully created."
 INVALID_EMAIL = "Invalid email"
 EMAIL_NOT_CONFIRMED = "Email not confirmed"
 INVALID_PASSWORD = "Invalid password"
@@ -16,3 +17,5 @@ DB_CONFIG_ERROR = "Database is not configured correctly"
 DB_CONNECT_ERROR = "Error connecting to the database"
 WELCOME_MESSAGE = "Welcome to FastAPI!"
 TO_MANY_REQUESTS = 'No more than 10 requests per minute'
+PERMISSION_ERROR = "Permission Error (You are not authorized to perform this operation)"
+FORBIDDEN_ACCESS = "Operation not permitted"

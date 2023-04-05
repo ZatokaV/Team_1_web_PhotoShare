@@ -6,12 +6,6 @@ from pydantic import BaseModel
 from pydantic import EmailStr, Field
 
 
-class UserRole(str, Enum):
-    Admin = 'admin'
-    Moderator = 'moderator'
-    User = 'user'
-
-
 class UserBase(BaseModel):
     username: str = Field(min_length=2, max_length=15)
     first_name: str = Field(min_length=2, max_length=15)
@@ -25,13 +19,26 @@ class UserCreate(UserBase):
     password: str = Field(min_length=6)
 
 
+class UserUpdate(UserBase):
+    is_active: bool
+    user_role: str
+
+
 class UserModel(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
-    number_of_photos: int
     is_active: bool
-    user_role: UserRole
+    user_role: str
+
+    class Config:
+        orm_mode = True
+
+
+class UserProfileModel(UserBase):
+    id: int
+    created_at: datetime
+    is_active: bool
 
     class Config:
         orm_mode = True
@@ -59,7 +66,7 @@ class TokenModel(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
-    
+
 
 class PostBase(BaseModel):
     photo_url: str
@@ -82,21 +89,45 @@ class PostModel(PostBase):
         orm_mode = True
 
 
+class CommentModel(BaseModel):
+    comment_text: str = Field("comment_text")
+
+
 class CommentBase(BaseModel):
-    comment_url: Optional[str]
-    comment_text: Optional[str]
-
-
-class CommentCreate(CommentBase):
-    pass
-
-
-class CommentModel(CommentBase):
     id: int
+    comment_text: Optional[str]
     created_at: datetime
-    updated_at: datetime
+    updated_at: datetime | None
     user_id: int
-    post_id: int
 
     class Config:
         orm_mode = True
+
+
+class CommentResponse(BaseModel):
+    comment: CommentBase
+    user_first_name: str
+    user_last_name: str
+    username: str
+    user_avatar: str | None
+
+
+class RateCreate(BaseModel):
+    rate: int = Field(ge=1, le=5)
+
+
+class RateDB(BaseModel):
+    id: int
+    rate: int
+    user_id: int
+    photo_id: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class RateResponse(RateDB, BaseModel):
+    username: str
+    photo_url: str
