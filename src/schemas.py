@@ -47,9 +47,9 @@ class TagCreate(TagBase):
 
 class TagModel(TagBase):
     id: int
-    created_at: datetime
-    updated_at: datetime
-    user_id: int
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+    user_id: Optional[int]
 
     class Config:
         orm_mode = True
@@ -62,9 +62,9 @@ class TokenModel(BaseModel):
     
 
 class PostBase(BaseModel):
-    photo_url: Optional[str]
+    photo_url: str
     description: Optional[str]
-    tags: Optional[List[TagCreate]]
+    tags: Optional[List[TagBase]]
 
 
 class PostCreate(PostBase):
@@ -76,7 +76,7 @@ class PostModel(PostBase):
     created_at: datetime
     updated_at: datetime
     user_id: int
-    comments: Optional[List["CommentModel"]] = []
+    tags: Optional[List[TagModel]]
 
     class Config:
         orm_mode = True

@@ -7,7 +7,7 @@ from sqlalchemy.sql.sqltypes import DateTime
 Base = declarative_base()
 
 
-class UserRole(enum.Enum):
+class UserRole(int, enum.Enum):
     Admin = 1
     Moderator = 2
     User = 3
@@ -26,7 +26,7 @@ class User(Base):
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column('updated_at', DateTime, default=func.now())
     is_active = Column(Boolean, default=True)
-    user_role = Column(Enum(UserRole), default=UserRole.User)
+    user_role = Column(Integer, default=UserRole.User)
 
 
 post_tag = Table('post_tag',
