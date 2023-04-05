@@ -19,16 +19,13 @@ async def get_image_for_transform(image_id: int, current_user: User, db: Session
     :return: The path to the image that will be transformed
     """
     if current_user.user_role == UserRole.Admin.name:
-        print('1')
         image = db.query(Post).filter(Post.id == image_id).first()
     else:
-        print('2')
         image = db.query(Post).filter(and_(Post.id == image_id, Post.user_id == current_user.id)).first()
-    print(image, current_user.user_role)
     image_path = None
     if image:
         image_path = image.photo_url
-    await get_search_posts('', 'rate', 1, 0, 20, db)
+    await get_search_posts('qwert', 'date', 1, 0, 20, db)
     return image_path
 
 
