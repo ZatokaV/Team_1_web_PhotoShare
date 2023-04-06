@@ -33,6 +33,6 @@ async def get_user_posts(user_id: int, db: Session = Depends(get_db)):
     return posts
 
 
-@router.put('/p/{post_id}', status_code=status.HTTP_200_OK)
-async def update_post(post_id: int, body, db: Session):
-    pass
+# @router.put('/p/{post_id}', status_code=status.HTTP_200_OK)
+# async def update_post(post_id: int, body, db: Session):
+    # pass
