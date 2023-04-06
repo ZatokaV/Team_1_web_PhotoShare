@@ -10,6 +10,24 @@ from src.schemas import SearchResponse, SortUserType, SortType
 
 async def get_search_posts(search_str: str, sort: str, sort_type: int, skip: int, limit: int, db: Session)\
         -> List[SearchResponse]:
+    """
+    The get_search_posts function is used to search for posts by a given string.
+    The function takes in the following parameters:
+        - search_str: The string that will be searched for in the database.
+        - sort: The type of sorting that will be applied to the results (either 'rate' or 'date').
+        - sort_type: A number indicating whether we want ascending or descending order (-/+ 1).
+                     If no value is provided, it defaults to ascending order.
+                     This parameter only applies if sort == 'rate'. Otherwise, it's ignored.
+
+    :param search_str: str: Search for posts that contain the string in their description or tags
+    :param sort: str: Sort the posts by date or rate
+    :param sort_type: int: Sort the posts in ascending or descending order
+    :param skip: int: Skip a number of posts, the limit: int parameter is used to limit the number of
+    :param limit: int: Limit the number of posts returned by the function
+    :param db: Session: Access the database
+    :return: A list of posts in which the search string is present in the description or
+    :doc-author: Trelent
+    """
     search_list = []
     search_list.append(Post.description.ilike(f'%{search_str}%'))
     search_list.append(Tag.tag.ilike(f'%{search_str}%'))
@@ -41,6 +59,19 @@ async def get_search_posts(search_str: str, sort: str, sort_type: int, skip: int
 
 
 async def get_search_users(search_str: str, sort: str, sort_type: int, skip: int, limit: int, db: Session):
+    """
+    The get_search_users function searches for users in the database based on a search string.
+    The function takes in a search string, sort type, sort direction (ascending or descending), skip value, limit value and db session.
+    It returns all users that match the search criteria.
+
+    :param search_str: str: Search for users by username, first name, last name or email
+    :param sort: str: Determine the sort type
+    :param sort_type: int: Determine whether the sort is ascending or descending
+    :param skip: int: Skip the first n number of results
+    :param limit: int: Limit the number of users returned
+    :param db: Session: Pass the database session to the function
+    :return: A list of users that match the search string
+    """
     list_reg = []
     list_reg.append(User.username.ilike(f"%{search_str}%"))
     list_reg.append(User.first_name.ilike(f"%{search_str}%"))

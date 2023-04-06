@@ -62,5 +62,4 @@ def create_list_transformation(body: TransformImageModel) -> List[dict]:
                     else:
                         transform_item[key] = t_dict[key]
             transform_list.append(transform_item)
-    print(transform_list)
     return transform_list

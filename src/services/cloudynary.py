@@ -16,6 +16,14 @@ cloudinary.config(
 
 
 def get_url(image_url: str):
+    """
+    The get_url function takes in an image_url and returns a url that can be used to access the image.
+        The function uses the cloudinary library to build a url for accessing images stored on Cloudinary.
+
+    :param image_url: str: Specify the type of parameter that is expected
+    :return: A url that can be used to access the image
+    :doc-author: Trelent
+    """
     return cloudinary.CloudinaryImage(image_url).build_url()
 
 def get_transformed_url(image_url: str, transform_list: list[dict]):
