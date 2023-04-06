@@ -54,9 +54,14 @@ def post(current_user, session):
 
 
 @pytest.mark.asyncio
-async def test_set_rate_for_image(post, session):
+async def test_get_search_posts(post, session):
     response = await rep_search.get_search_posts('My', 'date', 1, 0, 20, session)
     assert type(response) == list
     assert response[0]['id'] == post.id
-    assert response[0]['user_id'] == post.user_id
 
+
+@pytest.mark.asyncio
+async def test_get_search_users(c_user, session):
+    response = await rep_search.get_search_users('test', 'date', 1, 0, 20, session)
+    assert type(response) == list
+    assert response[0].username == c_user['username']

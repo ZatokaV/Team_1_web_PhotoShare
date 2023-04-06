@@ -1,6 +1,7 @@
 import pytest
 
 from src.database.models import Post, User, UserRole
+from src.services.messages_templates import FORBIDDEN_ACCESS
 
 
 @pytest.fixture()
@@ -54,9 +55,27 @@ def post_id(c_user, cur_token, session):
 
 
 def test_search_posts(client, token, post_id):
-    response = client.post('/api/search', json={"search_str": "My", "sort": "rate", "sort_type": 1},
+    response = client.post('/api/search/posts', json={"search_str": "My", "sort": "rate", "sort_type": 1},
                            headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200, response.text
     data = response.json()
     assert data[0]['id'] == post_id
+
+
+def test_search_users(client, token, sec_user):
+    response = client.post('/api/search/users', json={"search_str": "te", "sort": "email", "sort_type": 1},
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    print(data)
+    assert len(data) == 2
+    assert data[0]['username'] == sec_user['username']
+
+
+def test_search_users_as_user(client, cur_token):
+    response = client.post('/api/search/users', json={"search_str": "te", "sort": "rate", "sort_type": 1},
+                          headers={"Authorization": f"Bearer {cur_token}"})
+    assert response.status_code == 403, response.text
+    data = response.json()
+    assert data['detail'] == FORBIDDEN_ACCESS
 
