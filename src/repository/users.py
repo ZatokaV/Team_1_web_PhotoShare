@@ -57,7 +57,7 @@ async def get_user_profile(username: str, db: Session) -> UserProfileModel | Non
     return user_profile
 
 
-async def get_user_by_email(email: str, db: Session) -> User:
+async def get_user_by_email(email: str, db: Session) -> User | None:
     return db.query(User).filter(User.email == email).first()
 
 
