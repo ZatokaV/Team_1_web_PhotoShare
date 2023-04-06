@@ -138,9 +138,22 @@ class SortType(str, Enum):
     date = 'date'
 
 
+class SortUserType(str, Enum):
+    date = 'date'
+    name = 'name'
+    username = 'username'
+    email = 'email'
+
+
 class SearchModel(BaseModel):
     search_str: str = Field(default='')
     sort: SortType = Field(default=SortType.date)
+    sort_type: int = Field(ge=-1, le=1, default=1)
+
+
+class SearchUserModel(BaseModel):
+    search_str: str = Field(default='')
+    sort: SortUserType = Field(default=SortUserType.username)
     sort_type: int = Field(ge=-1, le=1, default=1)
 
 
