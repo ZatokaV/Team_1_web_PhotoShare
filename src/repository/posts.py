@@ -38,7 +38,7 @@ async def remove_post(post_id: int, db: Session):
     return post
 
 
-async def update_post(post_id: int, body, db: Session, user) -> Post:
+async def update_post(post_id: int, body, db: Session, user) -> Post | None:
     post = db.query(Post).filter(Post.id == post_id).first()
 
     if post:
@@ -46,6 +46,16 @@ async def update_post(post_id: int, body, db: Session, user) -> Post:
 
         post.description = body.description
         post.tags = tags_list
+        db.commit()
+        db.refresh(post)
+    return post
+
+
+async def change_post_mark(post_id: int, db: Session) -> Post | None:
+    post = db.query(Post).filter(Post.id == post_id).first()
+
+    if post:
+        post.marked = not post.marked
         db.commit()
         db.refresh(post)
     return post

@@ -65,3 +65,11 @@ async def remove_post(post_id: int, db: Session = Depends(get_db)):
     if post is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
     return post
+
+
+@router.put('/d/{post_id}', status_code=status.HTTP_200_OK)
+async def change_post_mark(post_id: int, db: Session = Depends(get_db)):
+    post = await posts_repository.change_post_mark(post_id, db)
+    if post is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+    return post
