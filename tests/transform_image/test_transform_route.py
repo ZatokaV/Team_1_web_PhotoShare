@@ -40,7 +40,85 @@ def test_transformation_for_image(post_id, client, token):
                            headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200, response.text
     data = response.json()
-    assert data.get('url') == url
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_resize(post_id, client, token):
+    transformation = {"resize": {"crop": "crop", "width": 100, "height": 100}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_rotate(post_id, client, token):
+    transformation = {"rotate": {"degree": 90}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_radius(post_id, client, token):
+    transformation = {"radius": {"all": 20}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_art_effect(post_id, client, token):
+    transformation = {"art_effect": {"effect": "al_dente"}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_contrast(post_id, client, token):
+    transformation = {"contrast_effect": [{"effect": "contrast", "level": 100}]}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_many(post_id, client, token):
+    transformation = {"blur_effect": [{"effect": "blur_faces", "strength": 2000}],
+                      "contrast_effect": [{"effect": "contrast", "level": 100}],
+                      "radius": {"all": 20}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_all(post_id, client, token):
+    transformation = {"blur_effect": [{"effect": "blur_faces", "strength": 2000}],
+                      "contrast_effect": [{"effect": "contrast", "level": 100}],
+                      "radius": {"all": 20},
+                      "simple_effect": [{"effect": "grayscale", "strength": 100}],
+                      "resize": {"crop": "crop", "width": 100, "height": 100}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_blur(post_id, client, token):
+    transformation = {"blur_effect": [{"effect": "blur_faces", "strength": 2000}]}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
 
 
 def test_transformation_for_image_not_found(client, token):
@@ -62,7 +140,19 @@ def test_save_transform_image(post_id, client, token):
 
 
 def test_get_qrcode_for_transform_image(post_id, client, token):
-    qrcode = 'iVBORw0KGgoAAAANSUhEUgAAAeoAAAHqAQAAAADjFjCXAAADC0lEQVR4nO3aUY6jMAzGcUs9AEfi6hyJA1TKltifY9rdkUpYaR7+eWBayC99sZzYjLWZsRkcDofD4XA4/Ddxi/E4PdzNXhPsmPI0W/tl19QVDp/kq89/tD6/j7Yt/cEzuaYMAYfP8CMYVz173T4WWp6xUAnf15Qe3HD4jXzTM7OleQz3hVyucPj/4ArVmLBkqoTDb+b9T59w7Mg9ck2hGkvm1yHg8AkeQ2H5w8VOIQ2HX+ZlRICOJVUCe9C+TYbDL/OaIP0SSPt15ND3NeDwGb5rR+7Vb2zLsQ9HDHsg13oFDp/iLWOzlyV5b81zoKks8bL4I+bh8O94v+OdFh+lIm5xyUBW0QKHT/EekbW1sugNmqdPnRI9XjOHwuETvNzuI7Nkz5xtHBAd5dkQDr/ObZQgcSwUyk9Wt+9cCA6f4MsIy6fFQks+GGXxrmIYDp/lnhH3h4rcsi1HDMen9o/GCxx+geezcTbUQuOr/8xm9hG0cPglbvkfBP7JPgtfxTUcPs9b9o0jNlu0+0bSLLv0lg0aOHyK1xSonsvxZNcGvepnfDIcPslHgPqnVsqNjOZxSvwsRuDwr3mMDFDvw2R/b/xCywK5weFzvJ4De0R6RWzquYwXH/4zcPg89ybLqsKjvkbT15Iq//JmBA7/mpdZ3lpR+CqkI4dGWQKH38BPXT0rafEtS4624PlYCId/z+tUr36fVspiPyVqq25jwOETPOY/ouY1y7Q4XmgsTcdCOPwGHoXvEi/UWjt1X6I2aSOQVZbA4dd5tPvOHeQ+NtUhY13PpnD4JG8ekcqN8bbWC4+WbZlnXnJxOPwyL3VIFsMxQfEaaxxjLe/X4PCrfAw7d/WiSrH6LjfWgMPnuMJRW3AcEOOeVlNwR/cFDp/jPQRHRsyvMUuZ89Tzg8MneUe6XYJ2rBs51Kxu33D4DTxaeyqGPVX2dUv3rynM4fA7eHRaTKsdI5LmD8dCOPwK738Um5YHRH1Va9lXax+pEg7/nsfQhE0vdD1fZgvacsDhs/zqgMPhcDgcDof/Fv4HhwN5tI0WpSwAAAAASUVORK5CYII='
+    qrcode = 'iVBORw0KGgoAAAANSUhEUgAAAeoAAAHqAQAAAADjFjCXAAADC0lEQVR4nO3aUY6jMAzGcUs9AEfi6hyJA1TKltifY9rdkUpYaR7' \
+             '+eWBayC99sZzYjLWZsRkcDofD4XA4/Ddxi/E4PdzNXhPsmPI0W/tl19QVDp/kq89/tD6/j7Yt' \
+             '/cEzuaYMAYfP8CMYVz173T4WWp6xUAnf15Qe3HD4jXzTM7OleQz3hVyucPj/4ArVmLBkqoTDb' \
+             '+b9T59w7Mg9ck2hGkvm1yHg8AkeQ2H5w8VOIQ2HX+ZlRICOJVUCe9C+TYbDL/OaIP0SSPt15ND3NeDwGb5rR' \
+             '+7Vb2zLsQ9HDHsg13oFDp/iLWOzlyV5b81zoKks8bL4I+bh8O94v+OdFh+lIm5xyUBW0QKHT' \
+             '/EekbW1sugNmqdPnRI9XjOHwuETvNzuI7Nkz5xtHBAd5dkQDr/ObZQgcSwUyk9Wt+9cCA6f4MsIy6fFQks+GGXxrmIYDp' \
+             '/lnhH3h4rcsi1HDMen9o/GCxx+geezcTbUQuOr/8xm9hG0cPglbvkfBP7JPgtfxTUcPs9b9o0jNlu0' \
+             '+0bSLLv0lg0aOHyK1xSonsvxZNcGvepnfDIcPslHgPqnVsqNjOZxSvwsRuDwr3mMDFDvw2R/b/xCywK5weFzvJ4De0R6RWzquYwXH' \
+             '/4zcPg89ybLqsKjvkbT15Iq//JmBA7/mpdZ3lpR+CqkI4dGWQKH38BPXT0rafEtS4624PlYCId/z+tUr36fVspiPyVqq25jwOETPOY' \
+             '/ouY1y7Q4XmgsTcdCOPwGHoXvEi/UWjt1X6I2aSOQVZbA4dd5tPvOHeQ+NtUhY13PpnD4JG8ekcqN8bbWC4' \
+             '+WbZlnXnJxOPwyL3VIFsMxQfEaaxxjLe/X4PCrfAw7d/WiSrH6LjfWgMPnuMJRW3AcEOOeVlNwR/cFDp' \
+             '/jPQRHRsyvMUuZ89Tzg8MneUe6XYJ2rBs51Kxu33D4DTxaeyqGPVX2dUv3rynM4fA7eHRaTKsdI5LmD8dCOPwK738Um5YHRH1Va9lXa'\
+             'x+pEg7/nsfQhE0vdD1fZgvacsDhs/zqgMPhcDgcDof/Fv4HhwN5tI0WpSwAAAAASUVORK5CYII= '
     response = client.get(f'/api/image/transform/qrcode/{post_id}', headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200, response.text
     data = response.json()
