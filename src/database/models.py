@@ -97,7 +97,7 @@ class RatePost(Base):
     __tablename__ = 'rates_posts'
 
     id = Column(Integer, primary_key=True)
-    rate = Column(String, default=0)
+    rate = Column("rate", Integer, default=0)
     photo_id = Column(Integer, ForeignKey(Post.id, ondelete="CASCADE"))
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
     created_at = Column('created_at', DateTime, default=func.now())
