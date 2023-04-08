@@ -28,31 +28,32 @@ async def update_user_self(body: UserBase, user: User, db: Session) -> User | No
 
 
 async def update_user_as_admin(body: UserUpdate, user: User, db: Session) -> User | None:
-    privileged_user = db.query(User).filter(User.id == user.id).first()
-    user_to_update = db.query(User).filter(
-        User.username == body.username).first()
-    if privileged_user.user_role == UserRole.Admin.name and user_to_update:
-        user_to_update.username = body.username
-        user_to_update.first_name = body.first_name
-        user_to_update.last_name = body.last_name
-        user_to_update.email = body.email
-        user_to_update.is_active = body.is_active
-        user_to_update.user_role = body.user_role
-        user_to_update.updated_at = datetime.now().isoformat()
-        db.commit()
-    return user_to_update
+    user_to_update = db.query(User).filter(User.username == body.username).first()
+    if user_to_update:
+        if user.user_role == UserRole.Admin.name:
+            user_to_update.username = body.username
+            user_to_update.first_name = body.first_name
+            user_to_update.last_name = body.last_name
+            user_to_update.email = body.email
+            user_to_update.is_active = body.is_active
+            user_to_update.user_role = body.user_role
+            user_to_update.updated_at = datetime.now().isoformat()
+            db.commit()
+        return user_to_update
+    return None
 
 
 async def get_user_profile(username: str, db: Session) -> UserProfileModel | None:
     this_user = db.query(User).filter(User.username == username).first()
-    photo_count = db.query(Post).filter(Post.user == this_user).count()
-    user_profile = None
+    user_profile = None    
     if this_user:
+        photo_count = db.query(Post).filter(Post.user_id == this_user.id).count()
+        photo_count = 0 if not photo_count else photo_count
         user_profile = UserProfileModel(
             id=this_user.id, username=this_user.username, first_name=this_user.first_name,
             last_name=this_user.last_name,
             email=this_user.email, created_at=this_user.created_at, is_active=this_user.is_active,
-            number_of_photos=this_user.number_of_photos if photo_count else 0
+            number_of_photos=photo_count
         )
     return user_profile
 
