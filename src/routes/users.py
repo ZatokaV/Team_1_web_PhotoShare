@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 import src.repository.users as repository_users
 from src.database.connect import get_db
-from src.database.models import User, UserRole
+from src.database.models import User
 from src.schemas import UserModel, UserProfileModel, UserBase, UserUpdate
 from src.services.auth import auth_service
 from src.services.messages_templates import NOT_FOUND, NOT_FOUND_OR_DENIED
@@ -13,7 +13,7 @@ from src.services.roles import RoleChecker
 
 router = APIRouter(prefix='/users', tags=["users"])
 
-permission_to_baned = RoleChecker([UserRole.Admin])
+permission_to_baned = RoleChecker(["Admin"])
 
 
 @router.get('/all', response_model=List[UserModel])
@@ -58,20 +58,13 @@ async def update_user_as_admin(
     return user
 
 
-@router.put("/banned_user", response_model=UserProfileModel)
-async def banned_user_profile(user_id: int, current_user: User = Depends(auth_service.get_current_user),
-                      db: Session = Depends(get_db)):
-    banned = await repository_users.banned_user(user_id, current_user, db)
+@router.put("/banned_user",
+            response_model=UserProfileModel,
+            status_code=200,
+            dependencies=[Depends(permission_to_baned)])
+async def banned_user_profile(user_id: int,
+                              db: Session = Depends(get_db)):
+    banned = await repository_users.banned_user(user_id, db)
     if banned is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
     return banned
-
-
-# @router.put("/banned_user", response_model=UserProfileModel, status_code=200, dependencies=Depends(permission_to_baned))
-# async def banned_user_profile(user_id: int,
-#                               db: Session = Depends(get_db)):
-#     banned = await repository_users.banned_user(user_id, db)
-#     if banned is None:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=NOT_FOUND)
-#     return banned

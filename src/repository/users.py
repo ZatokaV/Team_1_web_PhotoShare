@@ -1,10 +1,10 @@
+from datetime import datetime
+
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
-from datetime import datetime
 
 from src.database.models import User, Post, UserRole
 from src.schemas import UserModel, UserProfileModel, UserBase, UserUpdate
-from src.services.messages_templates import PERMISSION_ERROR
 
 
 async def create_user(body: UserModel, db: Session) -> User:
@@ -71,18 +71,9 @@ async def update_token(user: User, token: str | None, db: Session) -> None:
     db.commit()
 
 
-async def banned_user(user_id: int, current_user: User, db: Session):
-    if current_user.user_role == UserRole.Admin.name:
-        to_baned = db.query(User).filter(User.id == user_id).first()
-        if to_baned:
-            to_baned.is_active = False
-            db.commit()
-        return to_baned
-
-
-# async def banned_user(user_id: int, db: Session):
-#     to_baned = db.query(User).filter(User.id == user_id).first()
-#     if to_baned:
-#         to_baned.is_active = False
-#         db.commit()
-#     return to_baned
+async def banned_user(user_id: int, db: Session):
+    to_baned = db.query(User).filter(User.id == user_id).first()
+    if to_baned:
+        to_baned.is_active = False
+        db.commit()
+    return to_baned
