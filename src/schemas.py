@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
+from fastapi import Query
 
 from pydantic import BaseModel
 from pydantic import EmailStr, Field
@@ -74,8 +75,9 @@ class PostBase(BaseModel):
     tags: Optional[List[TagBase]]
 
 
-class PostCreate(PostBase):
-    pass
+class PostCreate(BaseModel):
+    description: Optional[str]
+    tags: Optional[List[str]]
 
 
 class PostModel(PostBase):

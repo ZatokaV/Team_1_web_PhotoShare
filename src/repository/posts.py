@@ -9,16 +9,10 @@ from src.schemas import PostBase, PostModel, PostCreate
 from src.repository import tags as repository_tags
 
 
-async def create_post(body: PostCreate, db: Session, user: User) -> Post:
-    tags = body.tags
-    tagslist = []
-    for tag_name in tags:
-        tag = repository_tags.get_tag_by_name(tag_name, db)
-        if not tag:
-            tag = repository_tags.create_tag(tag_name, user, db)
-        tagslist.append(tag)
+async def create_post(body: PostCreate, file_path: str, db: Session, user: User) -> Post:
+    tags_list = repository_tags.get_tags_list(body.tags, user, db)
 
-    post = Post(photo_url=body.photo_url, description=body.description, user_id=user.id, tags=tagslist)
+    post = Post(photo_url=file_path, description=body.description, user_id=user.id, tags=tags_list)
     db.add(post)
     db.commit()
     db.refresh(post)
@@ -34,3 +28,24 @@ async def get_post(post_id: int, db: Session) -> Post:
 async def get_user_posts(user_id: int, db: Session) -> List[Post]:
     posts = db.query(Post).filter(Post.user_id == user_id).all()
     return posts
+
+
+async def remove_post(post_id: int, db: Session):
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if post:
+        db.delete(post)
+        db.commit()
+    return post
+
+
+async def update_post(post_id: int, body, db: Session, user) -> Post:
+    post = db.query(Post).filter(Post.id == post_id).first()
+
+    if post:
+        tags_list = repository_tags.get_tags_list(body.tags, user, db)
+
+        post.description = body.description
+        post.tags = tags_list
+        db.commit()
+        db.refresh(post)
+    return post
