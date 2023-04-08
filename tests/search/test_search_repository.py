@@ -54,14 +54,48 @@ def post(current_user, session):
 
 
 @pytest.mark.asyncio
-async def test_get_search_posts(post, session):
+async def test_get_search_posts_date(post, session):
     response = await rep_search.get_search_posts('My', 'date', 1, 0, 20, session)
     assert type(response) == list
     assert response[0]['id'] == post.id
 
 
 @pytest.mark.asyncio
-async def test_get_search_users(c_user, session):
+async def test_get_search_posts_date_desc(post, session):
+    response = await rep_search.get_search_posts('My', 'date', -1, 0, 20, session)
+    assert type(response) == list
+    assert response[0]['id'] == post.id
+
+
+@pytest.mark.asyncio
+async def test_get_search_posts_rate(post, session):
+    response = await rep_search.get_search_posts('My', 'rate', 1, 0, 20, session)
+    assert type(response) == list
+    assert response[0]['id'] == post.id
+
+
+@pytest.mark.asyncio
+async def test_get_search_posts_rate_desc(post, session):
+    response = await rep_search.get_search_posts('My', 'rate', -1, 0, 20, session)
+    assert type(response) == list
+    assert response[0]['id'] == post.id
+
+@pytest.mark.asyncio
+async def test_get_search_users_date(c_user, session):
     response = await rep_search.get_search_users('test', 'date', 1, 0, 20, session)
+    assert type(response) == list
+    assert response[0].username == c_user['username']
+
+
+@pytest.mark.asyncio
+async def test_get_search_users_name_desc(c_user, session):
+    response = await rep_search.get_search_users('test', 'name', -1, 0, 20, session)
+    assert type(response) == list
+    assert response[0].username == c_user['username']
+
+
+@pytest.mark.asyncio
+async def test_get_search_users_email(c_user, session):
+    response = await rep_search.get_search_users('test', 'email', 1, 0, 20, session)
     assert type(response) == list
     assert response[0].username == c_user['username']

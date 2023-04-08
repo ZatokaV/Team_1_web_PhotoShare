@@ -95,7 +95,7 @@ async def get_search_users(search_str: str, sort: str, sort_type: int, skip: int
             sql = sql.order_by(User.email)
     if sort == SortUserType.name.name:
         if sort_type == -1:
-            sql = sql.order_by(desc(User.first_name, User.last_name))
+            sql = sql.order_by(desc(User.first_name), desc(User.last_name))
         else:
             sql = sql.order_by(User.first_name, User.last_name)
     users = sql.offset(skip).limit(limit).all()

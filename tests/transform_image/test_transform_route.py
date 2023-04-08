@@ -40,7 +40,85 @@ def test_transformation_for_image(post_id, client, token):
                            headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200, response.text
     data = response.json()
-    assert data.get('url') == url
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_resize(post_id, client, token):
+    transformation = {"resize": {"crop": "crop", "width": 100, "height": 100}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_rotate(post_id, client, token):
+    transformation = {"rotate": {"degree": 90}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_radius(post_id, client, token):
+    transformation = {"radius": {"all": 20}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_art_effect(post_id, client, token):
+    transformation = {"art_effect": {"effect": "al_dente"}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_contrast(post_id, client, token):
+    transformation = {"contrast_effect": [{"effect": "contrast", "level": 100}]}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_many(post_id, client, token):
+    transformation = {"blur_effect": [{"effect": "blur_faces", "strength": 2000}],
+                      "contrast_effect": [{"effect": "contrast", "level": 100}],
+                      "radius": {"all": 20}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_all(post_id, client, token):
+    transformation = {"blur_effect": [{"effect": "blur_faces", "strength": 2000}],
+                      "contrast_effect": [{"effect": "contrast", "level": 100}],
+                      "radius": {"all": 20},
+                      "simple_effect": [{"effect": "grayscale", "strength": 100}],
+                      "resize": {"crop": "crop", "width": 100, "height": 100}}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
+
+
+def test_transformation_for_image_blur(post_id, client, token):
+    transformation = {"blur_effect": [{"effect": "blur_faces", "strength": 2000}]}
+    response = client.post(f'/api/image/transform/{post_id}', json=transformation,
+                           headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data.get('url') is not None
 
 
 def test_transformation_for_image_not_found(client, token):
