@@ -51,7 +51,7 @@ async def get_search_posts(search_str: str, sort: str, sort_type: int, skip: int
         item = {x.name: getattr(post[0], x.name) for x in post[0].__table__.columns}
         item['username'] = post[1]
         item['rate'] = post[2]
-        item['photo_url'] = get_url(item['photo_url'])
+        # item['photo_url'] = get_url(item['photo_url'])
         tags = db.query(Tag).join(post_tag).join(Post).filter(Post.id == item['id']).order_by(Tag.tag).all()
         item['tags'] = [{'id': tag.id, 'tag': tag.tag} for tag in tags]
         result.append(item)
