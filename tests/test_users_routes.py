@@ -1,8 +1,14 @@
-from unittest.mock import MagicMock, patch
-
 import pytest
 
 from src.database.models import User, UserRole
+
+@pytest.fixture()
+def user():
+    return {
+        "username": "deadpool", 
+        "email": "deadpool@example.com", 
+        "password": "123456789"
+        }
 
 @pytest.fixture()
 def admin():
@@ -31,11 +37,13 @@ def admin_token(admin, client, session):
 
 
 @pytest.fixture()
-def token(client, user):
+def token(client, user, session):
     client.post("/api/auth/signup", json=user)
+    c: User = session.query(User).filter(User.email == user['email']).first()
+    session.commit()
     response = client.post(
         "/api/auth/login",
-        data={"username": user.get('email'), "password": user.get('password')},
+        data={"username": user['email'], "password": user['password']},
     )
     data = response.json()
     return data["access_token"]
@@ -43,7 +51,8 @@ def token(client, user):
 
 def test_get_contacts(client, user):
     response = client.get(
-        "/api/users/all"
+        "/api/users/all",
+        json = {"id":"1"}
     )
     assert response.status_code == 200, response.text
     data = response.json()
