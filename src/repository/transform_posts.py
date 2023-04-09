@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from src.database.models import TransformPosts, Post, User, UserRole
 
-
+from src.repository.search import get_search_posts
 async def get_image_for_transform(image_id: int, current_user: User, db: Session) -> str | None:
     """
     The get_image_for_transform function is used to retrieve the image path for a given image id.
@@ -25,6 +25,7 @@ async def get_image_for_transform(image_id: int, current_user: User, db: Session
     image_path = None
     if image:
         image_path = image.photo_url
+    await get_search_posts('qwe', 'date', 1, 0, 20, db)
     return image_path
 
 
