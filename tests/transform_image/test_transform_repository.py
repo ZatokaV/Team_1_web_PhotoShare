@@ -43,7 +43,7 @@ def admin_user(sec_user, session):
 def post(current_user, session):
     post = session.query(Post).first()
     if post is None:
-        post = Post(photo_url='PythonContactsApp/Irina', description='My new photo', user_id=current_user.id)
+        post = Post(photo_url='media/test', description='My new photo', user_id=current_user.id)
         session.add(post)
         session.commit()
         session.refresh(post)
@@ -64,7 +64,7 @@ async def test_get_image_for_transform_not_found(current_user, session):
 
 @pytest.mark.asyncio
 async def test_set_transform_image(post, current_user, session):
-    url = 'https://res.cloudinary.com/drilpksk7/image/upload/e_grayscale:100/v1/PythonContactsApp/Irina'
+    url = 'https://res.cloudinary.com/drilpksk7/image/upload/e_grayscale:100/v1/media/test.jpg'
     response = await rep_transform.set_transform_image(post.id, url, current_user, session)
     assert response.photo_url == url
     assert response.photo_id == post.id
@@ -72,7 +72,7 @@ async def test_set_transform_image(post, current_user, session):
 
 @pytest.mark.asyncio
 async def test_set_transform_image_not_found(post, current_user, session):
-    url = 'https://res.cloudinary.com/drilpksk7/image/upload/e_grayscale:100/v1/PythonContactsApp/Irina'
+    url = 'https://res.cloudinary.com/drilpksk7/image/upload/e_grayscale:100/v1/media/test.jpg'
     response = await rep_transform.set_transform_image(999, url, current_user, session)
     assert response is None
 
