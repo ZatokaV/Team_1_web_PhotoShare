@@ -40,6 +40,7 @@ class UserProfileModel(UserBase):
     id: int
     created_at: datetime
     is_active: bool
+    number_of_photos: int
 
     class Config:
         orm_mode = True

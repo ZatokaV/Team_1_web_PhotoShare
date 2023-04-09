@@ -51,7 +51,7 @@ async def get_search_posts(search_str: str, sort: str, sort_type: int, skip: int
         item = {x.name: getattr(post[0], x.name) for x in post[0].__table__.columns}
         item['username'] = post[1]
         item['rate'] = post[2]
-        item['photo_url'] = get_url(item['photo_url'])
+        # item['photo_url'] = get_url(item['photo_url'])
         tags = db.query(Tag).join(post_tag).join(Post).filter(Post.id == item['id']).order_by(Tag.tag).all()
         item['tags'] = [{'id': tag.id, 'tag': tag.tag} for tag in tags]
         result.append(item)
@@ -95,7 +95,7 @@ async def get_search_users(search_str: str, sort: str, sort_type: int, skip: int
             sql = sql.order_by(User.email)
     if sort == SortUserType.name.name:
         if sort_type == -1:
-            sql = sql.order_by(desc(User.first_name, User.last_name))
+            sql = sql.order_by(desc(User.first_name), desc(User.last_name))
         else:
             sql = sql.order_by(User.first_name, User.last_name)
     users = sql.offset(skip).limit(limit).all()
