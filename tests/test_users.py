@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import Mock
 
 from sqlalchemy.orm import Session
-from datetime import datetime
 
 from src.database.models import User, UserRole, Post
 from src.repository.users import banned_user, create_user, update_user_self, update_user_as_admin, \
@@ -17,14 +16,9 @@ class TestBannedUser(unittest.IsolatedAsyncioTestCase):
 
     async def test_banned_user_success(self):
         self.user_mock.user_role = UserRole.Admin.name
-        result = await banned_user(123, self.user_mock, self.session_mock)
+        result = await banned_user(123, self.session_mock)
         self.assertEqual(result.is_active, False)
         self.session_mock.commit.assert_called_once()
-
-    async def test_banned_user_permission_error(self):
-        self.user_mock.user_role = UserRole.User.name
-        result = await banned_user(123, self.user_mock, self.session_mock)
-        self.assertEqual(result, None)
 
 
 class TestUserCRUD(unittest.IsolatedAsyncioTestCase):
