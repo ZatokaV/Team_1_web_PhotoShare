@@ -1,5 +1,8 @@
 import uvicorn
+import pathlib
+
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -8,7 +11,8 @@ from src.routes import auth, posts, users, transform_posts, rates, comments, sea
 from src.services.messages_templates import DB_CONFIG_ERROR, DB_CONNECT_ERROR, WELCOME_MESSAGE
 
 app = FastAPI()
-
+app.mount("/media", StaticFiles(directory="media"), name="media")
+pathlib.Path("media").mkdir(exist_ok=True)
 
 @app.get("/api/healthchecker")
 def healthchecker(db: Session = Depends(get_db)):
