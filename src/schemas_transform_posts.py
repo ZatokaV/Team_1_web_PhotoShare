@@ -124,10 +124,10 @@ class TypeBlurEffect(str, Enum):
 class BlurEffectTransformModel(BaseModel):
     effect: TypeBlurEffect
     strength: int = Field(ge=0, le=2000)
-    x: int = Field(ge=0)
-    y: int = Field(ge=0)
-    width: int = Field(ge=0)
-    height: int = Field(ge=0)
+    x: Optional[int] = Field(ge=0)
+    y: Optional[int] = Field(ge=0)
+    width: Optional[int] = Field(ge=0)
+    height: Optional[int] = Field(ge=0)
 
 
 class TransformImageModel(BaseModel):
