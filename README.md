@@ -8,6 +8,7 @@ Instruction
 ...
   
 • How to use?
+
 Simple sign up page avialable at the api/auth/signup page.
 After your succesfull sign up, you'll need to proceed to api/auth/login page, and login in out system.
     
