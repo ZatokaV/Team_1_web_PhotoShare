@@ -1,8 +1,8 @@
 # Photo Share
 
-## The best website for posting, transforming, comenting and rating images in the world!
+The best website for posting, transforming, comenting and rating images in the world!
 
-# Technologies
+## Technologies
 * Python (Fastapi, SQLAlchemy)
 * Cloudinary
 
@@ -28,11 +28,11 @@
 * To see other capabilites, check [documentation](#link)
 
 ## Our Team:
-Developer: [Irina Shushkevych](#https://github.com/IrinaShushkevych)
-Developer: [Fyodor Shevchenko](#https://github.com/FyodorSh)
-Developer: [Yaroslav Push](#https://github.com/Invil124)
-Developer: [Volodymyr Kuznetsov](#https://github.com/Ovick)
-Developer + Scrum Muster: [Yehor Serdiuk](#https://github.com/De1c)
-Team Lead + Repository Owner: [Vitalii Zatoka](#https://github.com/ZatokaV)
+Developer: [Irina Shushkevych](#https://github.com/IrinaShushkevych)  
+Developer: [Fyodor Shevchenko](#https://github.com/FyodorSh)  
+Developer: [Yaroslav Push](#https://github.com/Invil124)  
+Developer: [Volodymyr Kuznetsov](#https://github.com/Ovick)  
+Developer + Scrum Muster: [Yehor Serdiuk](#https://github.com/De1c)  
+Team Lead + Repository Owner: [Vitalii Zatoka](#https://github.com/ZatokaV)  
  
 
