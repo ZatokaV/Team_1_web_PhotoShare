@@ -117,12 +117,10 @@ class TestUserCRUD(unittest.IsolatedAsyncioTestCase):
         self.session_mock.query.return_value.filter.return_value.first.return_value = self.user_mock
         self.session_mock.query.return_value.filter.return_value.first.return_value = self.post_mock
         self.assertEqual(self.user_mock.username, "test_user")
-        """
-        #result = await get_user_profile("test_user", self.session_mock)
+        result = await get_user_profile("", self.session_mock)
         self.assertIsInstance(result, UserProfileModel)
         self.assertEqual(result.username, self.user_mock.username)
         self.assertIsNotNone(result.number_of_photos)
-        """
 
     async def test_get_user_profile_not_found(self):
         self.session_mock.query(User).filter().first.return_value = self.user_mock
