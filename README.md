@@ -15,17 +15,17 @@ The best website for posting, transforming, comenting and rating images in the w
 ### Authorization
 
 * Simple sign up page avialable at the api/auth/signup page.
-* After your succesfull sign up, you'll need to proceed to api/auth/login page, and login in our system.
+* After your succesfull sign up, you'll need to proceed to api/auth/login page, and log in to our system.
 
 ### Features
 
-* Post your own images
-* Transform your posted pictures
-* Add up to 5 tags for each image
-* Create comments under posts
-* Search posts with tags
-* Rate posts
-* To see other capabilites, check [documentation](link)
+* Post your own images.
+* Transform your posted pictures.
+* Add up to 5 tags for each image.
+* Create comments under posts.
+* Search posts with tags.
+* Rate posts.
+* To see other capabilites, check [documentation](link).
 
 ## Our Team:
 Developer: [Irina Shushkevych](https://github.com/IrinaShushkevych)  
