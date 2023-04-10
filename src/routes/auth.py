@@ -18,6 +18,15 @@ security = HTTPBearer()
 
 @router.post("/signup", status_code=status.HTTP_201_CREATED)
 async def signup(body: UserCreate, db: Session = Depends(get_db)):
+    """
+    The signup function creates a new user in the database.
+        It takes an email and password as input, hashes the password, and stores it in the database.
+        If a user with that email already exists, it returns an error message.
+    
+    :param body: UserCreate: Create a new user
+    :param db: Session: Create a connection to the database
+    :return: A dictionary, so you need to use the same in your test
+    """
     exist_user = await repository_users.get_user_by_email(body.email, db)
     if exist_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
@@ -29,6 +38,13 @@ async def signup(body: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=TokenModel)
 async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    """
+    The login function is used to authenticate a user.
+    
+    :param body: OAuth2PasswordRequestForm: Validate the request body
+    :param db: Session: Get the database session
+    :return: A dictionary with the access_token, refresh_token and token type
+    """
     user = await repository_users.get_user_by_email(body.username, db)
     if user is None:
         raise HTTPException(
@@ -45,6 +61,15 @@ async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
 
 @router.get('/refresh_token', response_model=TokenModel)
 async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(security), db: Session = Depends(get_db)):
+    """
+    The refresh_token function is used to refresh the access token.
+        The function will check if the user has a valid refresh token, and if so, it will create new tokens for them.
+        If not, it will raise an HTTPException with status code 401 (UNAUTHORIZED) and detail message INVALID_TOKEN.
+    
+    :param credentials: HTTPAuthorizationCredentials: Get the token from the request header
+    :param db: Session: Get the database session
+    :return: A token_type of 'bearer'
+    """
     token = credentials.credentials
     email = await auth_service.decode_refresh_token(token)
     user = await repository_users.get_user_by_email(email, db)

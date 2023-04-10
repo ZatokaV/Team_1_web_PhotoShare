@@ -14,7 +14,6 @@ app = FastAPI()
 pathlib.Path("media").mkdir(exist_ok=True)
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
-
 @app.get("/api/healthchecker")
 def healthchecker(db: Session = Depends(get_db)):
     try:

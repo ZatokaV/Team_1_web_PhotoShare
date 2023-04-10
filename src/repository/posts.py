@@ -24,6 +24,7 @@ async def create_post(body: PostCreate, file_path: str, db: Session, user: User)
     :return: Added post
     :rtype: Post
     """
+
     tags_list = repository_tags.get_tags_list(body.tags, user, db)
 
     post = Post(photo_url=file_path, description=body.description, user_id=user.id, tags=tags_list)
@@ -74,6 +75,7 @@ async def remove_post(post_id: int, db: Session):
     :param db: Database session
     :type db: Session
     """
+
     post = db.query(Post).filter(Post.id == post_id).first()
     if post:
         db.delete(post)
@@ -96,6 +98,7 @@ async def update_post(post_id: int, body: PostCreate, db: Session, user: User) -
     :return: Updated post
     :rtype: Post | None
     """
+
     post = db.query(Post).filter(Post.id == post_id).first()
 
     if post:
