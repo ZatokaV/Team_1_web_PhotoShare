@@ -49,6 +49,7 @@ class Post(Base):
     created_at = Column('created_at', DateTime, default=func.now())
     updated_at = Column('updated_at', DateTime, default=func.now())
     user_id = Column(Integer, ForeignKey(User.id, ondelete="CASCADE"))
+    marked = Column(Boolean, default=False)  # deletion mark
     marked = Column(Boolean)  # deletion mark
     tags = relationship("Tag", secondary=post_tag,
                         backref="posts", passive_deletes=True)

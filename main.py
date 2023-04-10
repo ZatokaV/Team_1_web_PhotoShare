@@ -11,8 +11,8 @@ from src.routes import auth, posts, users, transform_posts, rates, comments, sea
 from src.services.messages_templates import DB_CONFIG_ERROR, DB_CONNECT_ERROR, WELCOME_MESSAGE
 
 app = FastAPI()
-app.mount("/media", StaticFiles(directory="media"), name="media")
 pathlib.Path("media").mkdir(exist_ok=True)
+app.mount("/media", StaticFiles(directory="media"), name="media")
 
 @app.get("/api/healthchecker")
 def healthchecker(db: Session = Depends(get_db)):
